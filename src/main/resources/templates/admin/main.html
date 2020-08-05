@@ -16,18 +16,18 @@
 
 <body id="listbody">
 <!-- 右边内容 -->
-<div class="wrap-fluid">
+<!-- <div class="wrap-fluid">
     <div class="container-fluid paper-wrap bevel tlbr">
-        <!-- 内容 -->
-        <!--标题 通用-->
+        内容
+        标题 通用
         <div th:replace="admin/common/html/title :: title(${title},${parenttitle},${isMsg},${msgHTML})">
         </div>
-        <!-- 结束标题 通用-->
+        结束标题 通用
         <div class="content-wrap">
-            <!-- 结束内容 -->
+            结束内容
             <div class="row">
                 <div class="col-sm-12">
-                    <!-- 空白页开始-->
+                    空白页开始
                     <div class="nest" id="Blank_PageClose">
                         <div class="title-alt">
                             <h6>首页</h6>
@@ -42,7 +42,8 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="body-nest" id="Blank_Page_Content">
+                        
+                        <div class="body-nest" id="Blank_Page_Content" style="min-height: 720px;">
 
 
  <p>先看文档，不懂在群里@我。本群进入后如果退出会有黑名单，永不在服务。浪费我时间，切用切珍惜！ </p>
@@ -178,14 +179,12 @@
                         </div>
                     </div>
                 </div>
-                <!-- 空白页结束 -->
+                空白页结束
             </div>
-            <!-- 结束内容 -->
+            结束内容
         </div>
     </div>
-</div>
-<!-- 结束右边内容 -->
-
+</div>  -->
 
 <!-- 通用js -->
 <div th:include="admin/common/html/js :: onload_js">

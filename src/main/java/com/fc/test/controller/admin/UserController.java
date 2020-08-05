@@ -66,7 +66,7 @@ public class UserController extends BaseController{
 	 */
 	//@Log(title = "分页查询", action = "1")
 	@ApiOperation(value = "分页查询", notes = "分页查询")
-	@PostMapping("/list")
+	@RequestMapping("/list")
 	@RequiresPermissions("system:user:list")
 	@ResponseBody
 	public Object list(Tablepar tablepar,String searchText){
