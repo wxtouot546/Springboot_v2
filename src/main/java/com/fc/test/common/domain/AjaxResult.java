@@ -71,6 +71,20 @@ public class AjaxResult extends HashMap<String, Object>
     }
     
     /**
+     * 返回失败消息
+     * 
+     * @param msg 内容
+     * @return 成功消息
+     */
+    public static AjaxResult succes(String msg)
+    {
+        AjaxResult json = new AjaxResult();
+        json.put("msg", msg);
+        json.put("code", 205);
+        return json;
+    }
+    
+    /**
      * 返回成功消息
      * 
      * @return 成功消息
@@ -79,7 +93,10 @@ public class AjaxResult extends HashMap<String, Object>
     {
         return AjaxResult.success("操作成功");
     }
-    
+    public static AjaxResult shibai(String value)
+    {
+        return AjaxResult.succes("操作失败:"+value);
+    }
     public static AjaxResult successData(int code, Object value){
     	 AjaxResult json = new AjaxResult();
     	 json.put("code", code);

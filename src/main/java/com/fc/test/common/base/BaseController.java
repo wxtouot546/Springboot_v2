@@ -91,6 +91,13 @@ public class BaseController
     {
         return AjaxResult.success();
     }
+    /**
+     * 返回成功
+     */
+    public AjaxResult shibai(String value)
+    {
+    	return AjaxResult.shibai(value);
+    }
 
     /**
      * 返回失败消息
