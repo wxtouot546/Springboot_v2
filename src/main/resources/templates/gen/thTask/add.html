@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.pollix.at/thymeleaf/shiro">
+<head th:replace="admin/common/html/tableHead :: head(~{::title},~{::link},~{::style})">
+
+<title th:text=${title}></title>
+<!-- 这儿引用单独的css link -->
+<!-- Ladda for Bootstrap 3按钮加载进度插件 -->
+<link rel="stylesheet" th:href="@{/static/admin/assets/js/button/ladda/ladda.min.css}">
+<!-- bootstrap-table表单样式 -->
+<link th:href="@{/static/admin/assets/js/bootstrap/css/bootstrap-table/bootstrap-table.min.css}" rel="stylesheet"/>
+<!-- 用户界面自定义css -->
+<link th:href="@{/static/admin/user/css/user-add.css}" rel="stylesheet"/>
+<style type="text/css">
+.inputc{
+    margin-right: 10px;
+    width: 17px;
+    height: 17px;
+    margin-right: 6px !important;
+}
+</style>
+</head>
+
+<body>
+
+<div class="content-wrap">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="nest" id="elementClose">
+				<div class="">
+				</div>
+				<div class="body-nest" id="element">
+					<div class="panel-body">
+						<form  class="form-horizontal m" id="form-add">
+						
+									<div class="form-group">
+										<label class="col-sm-3 control-label " id="tiezi">帖子url：</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" id="url" name="url"/>
+										</div>
+									</div>
+									
+								
+									<div class="form-group">
+										<label class="col-sm-3 control-label ">类型：</label>
+										<div class="row">
+									        <div class="col-xs-6" style="height: 33px;">
+									          <!--引入相关的CSS JS后  直接加个   selectpicker就行-->
+									            <select id="sel" name="sel" class="form-control valid" style="height: 100%;width: 100%;">
+									                <option value="1">顶贴</option>
+									                <option value="2">刷分</option>
+									                <option value="3">刷贴</option>
+									            </select>
+									        </div>
+									    </div>
+									</div>
+									
+									<div class="form-group">
+										<label class="col-sm-3 control-label " id="huifushuliang">回复数量：</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" id="number" name="number" placeholder="如果不填默认回复1条" onchange="if(!/(^0$)|(^99999$)|(^\d{1,2}$)/.test(value)){value='';alert('回复数量请输入1-99999的整数!');}"/>
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label class="col-sm-3 control-label ">用户组：</label>
+										<div class="row">
+									        <div class="col-xs-6" style="height: 33px;">
+									          <!--引入相关的CSS JS后  直接加个   selectpicker就行-->
+									            <select id="sel1" name="sel1" class="form-control valid" style="height: 100%;width: 100%;">
+									                <option th:each="usergroup : ${listgroup}" th:value="${usergroup.id}" th:text="${usergroup.userGroupName}">
+									            </select>
+									        </div>
+									    </div>
+									</div>
+									
+									<div class="form-group">
+										<label class="col-sm-3 control-label ">用户：</label>
+										<div class="row">
+									        <div id="yh" class="col-xs-6" style="height: auto; min-height:33px;font-size: 17px;    line-height: 33px;">
+									          <!--引入相关的CSS JS后  直接加个   selectpicker就行-->
+									            <!-- <select id="sel2" name="sel2" class="form-control valid" style="height: 100%;width: 100%;" multiple="multiple"; size="4">
+									                <option th:each="user : ${thlist}" th:value="${user.id}" th:text="${user.userId}"  >
+									                th:checked="${#lists.contains(userRoleList, role.id)}" 
+									            </select> -->
+									            <input class="inputc" th:each="user:${thlist}"  type="checkbox" name="inputc" th:value="${user.id}" th:text="${user.userId}+'        '" />
+									        </div>
+									    </div>
+									</div>
+								
+									<div class="form-group">
+										<label class="col-sm-3 control-label ">评论组：</label>
+										<div class="row">
+									        <div class="col-xs-6" style="height: 33px;">
+									          <!--引入相关的CSS JS后  直接加个   selectpicker就行-->
+									            <select id="sel3" name="sel3" class="form-control valid" style="height: 100%;width: 100%;">
+									                <option th:each="th : ${thList}" th:value="${th.id}" th:text="${th.discussGroupName}">
+									            </select>
+									        </div>
+									    </div>
+									</div>
+								
+									<div class="form-group" id="huifukaishi">
+										<label class="col-sm-3 control-label ">回复间隔开始（秒）：</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" id="start" name="start" placeholder="0" onchange="if(!/(^0$)|(^100$)|(^\d{1,2}$)/.test(value)){value='';alert('回复间隔开始（秒）请输入1-100的整数!');}"/>
+										</div>
+									</div>
+									
+								
+									<div class="form-group" id="huifujieshu">
+										<label class="col-sm-3 control-label ">回复间隔结束（秒）：</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" id="end" name="end" placeholder="0" onchange="if(!/(^0$)|(^100$)|(^\d{1,2}$)/.test(value)){value='';alert('回复间隔结束（秒）请输入1-100的整数!');}"/>
+										</div>
+									</div>
+									
+									<div class="form-group" id="moren" style="display:none;">
+										<label class="col-sm-3 control-label ">执行时间：</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value = "默认速度逻辑：2000/10分钟" readonly="true"/>
+										</div>
+									</div>
+						
+									<!-- <div class="form-group">
+										<label class="col-sm-3 control-label ">创建时间：</label>
+										<div class="col-sm-8">
+											<input class="form-control MyDate" type="text" id="createTime" name="createTime"/>
+										</div>
+									</div> -->
+						
+									<!-- <div class="form-group">
+										<label class="col-sm-3 control-label ">更新时间：</label>
+										<div class="col-sm-8">
+											<input class="form-control MyDate" type="text" id="updateTime" name="updateTime"/>
+										</div>
+									</div> -->
+			
+									<div class="form-group">
+										<div class="form-control-static col-sm-offset-9">
+											<button type="submit" class="btn btn-primary">提交</button>
+											<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+										</div>
+									</div>
+						 </form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 通用js -->
+<div th:include="admin/common/html/js :: onload_js">
+   
+</div>
+<!-- bootstarp 表格 -->
+<script th:src="@{/static/admin/assets/js/bootstrap/js/bootstrap-table/bootstrap-table.min.js}" type="text/javascript"></script>
+<script th:src="@{/static/admin/assets/js/bootstrap/js/bootstrap-table/locale/bootstrap-table-zh-CN.min.js}" type="text/javascript"></script>
+<script th:src="@{/static/admin/assets/js/bootstrap/js/base_list.js}" type="text/javascript"></script>
+
+
+<!-- 弹窗 -->
+<script  th:src="@{/static/admin/assets/js/layer/layer.js}" type="text/javascript"></script>
+<!-- 遮罩层 -->
+<script  th:src="@{/static/admin/assets/js/blockUI/jquery.blockUI.js}" type="text/javascript"></script>
+<!-- jqueryForm序列化 -->
+<script  th:src="@{/static/js/jqueryFormSerializeJson.js}" type="text/javascript"></script>
+<script type="text/javascript">
+
+$(function(){
+	 $(".MyDate").datetimepicker({
+		 	format: "yyyy-mm-dd hh:00:00",
+	        startDate: new Date(),
+	        autoclose: true,
+	        todayBtn: true,
+	        language: 'zh-CN',
+	        initialDate:new Date(),
+	        minView: 1      
+	    });
+	
+})
+$("#sel1").change(function(){
+	var type = $(this).children('option:selected').val();
+	$.ajax({
+		cache : true,
+		type : "POST",
+		url : rootPath + "/ThUserController/type",
+		dataType:"json",
+		data : {
+			type:type
+		},
+		async : false,
+		error : function(request) {
+			alert("系统错误");
+		},
+		success : function(data) {
+			var userlist = data.userlist;
+			$("#yh").empty();
+			var html='';
+			if(userlist.length != 0){
+				for(var i=0;i<userlist.length;i++){
+					html += '<input class="inputc" type="checkbox" name="inputc" value="'+userlist[i].id+'">'+userlist[i].userId+"      "+'</input>';
+				}
+				$("#yh").html(html);
+			}else{
+				html += '<input class="form-control" type="text" value = "暂无用户信息" readonly="true"/> ';
+				$("#yh").html(html);
+			}
+		}
+	});
+})
+$("#sel").change(function(){
+	var type = $(this).children('option:selected').val();
+	if(type == 1){
+		// 顶贴
+		$("#tiezi").text("帖子url：");
+		$("#huifushuliang").text("回复数量：");
+		$("#huifukaishi").show();
+		$("#huifujieshu").show();
+		$("#moren").hide();
+	}
+	if(type == 2){
+		// 刷分
+		$("#tiezi").text("板块id：");
+		$("#huifushuliang").text("帖子抓取数量：");
+		$("#huifukaishi").show();
+		$("#huifujieshu").show();
+		$("#moren").hide();
+	}
+	if(type == 3){
+		// 刷帖
+		$("#tiezi").text("帖子url：");
+		$("#huifushuliang").text("浏览量：");
+		$("#huifukaishi").hide();
+		$("#huifujieshu").hide();
+		$("#moren").show();
+	}
+})
+
+$("#form-add").validate({
+	/* rules:{
+		url:{
+			required:true,
+			minlength: 2,
+			maxlength: 20,
+			remote: {
+                url: rootPath + "/ThTaskController/checkNameUnique",
+                type: "post",
+                dataType: "json",
+                dataFilter: function(data, type) {
+                    if (data == "0")
+                    	return true;
+                    else 
+                    	return false;
+                }
+            }
+		}
+	},
+	messages: {
+        "url": {
+            remote: "已经存在"
+        }
+    }, */
+	submitHandler:function(form){
+		add();
+	}
+});
+
+/**
+ * 用户添加方法
+ */
+function add() {
+	/* var dataFormJson=$("#form-add").serialize(); */
+	var url = $("#url").val();
+	if(url == null || url == undefined || url==""){
+		$.modal.alertError("url必填 请输入");
+		return false;
+	}
+	var userGroupId = $("#sel1 option:selected").val();
+	if(undefined == userGroupId){
+		$.modal.alertError("请选择用户组，如果没有请先添加用户组");
+		return false;
+	}
+	var isChecked = $('.inputc').is(":checked");
+	if(isChecked == false){
+		$.modal.alertError("请选择用户，如果没有用户请先添加用户");
+		return false;
+	}
+	var proNmCheck =$('input[name="inputc"]:checked');
+	var userIds = "";
+	var len = 1;
+	for (var i = 0; i < proNmCheck.length; i++,len++) {
+		if(len == proNmCheck.length){
+			userIds += proNmCheck[i].value;
+		}else{
+			userIds += proNmCheck[i].value +",";
+		}
+	}
+	var type = $("#sel option:selected").val();
+	var number = $("#number").val();
+	var discussGroupId = $("#sel3 option:selected").val();
+	if(undefined == discussGroupId){
+		$.modal.alertError("请选择评论组，如果没有请先添加评论组");
+		return false;
+	}
+	var start = $("#start").val();
+	var end = $("#end").val();
+	$.ajax({
+		cache : true,
+		type : "POST",
+		url : rootPath + "/ThTaskController/add",
+		data : {
+			url:url,
+			type:type,
+			number:number,
+			userGroupId:userGroupId,
+			userIds:userIds,
+			discussGroupId:discussGroupId,
+			start:start,
+			end:end,
+			isdel:0
+		},
+		async : false,
+		error : function(request) {
+			$.modal.alertError("系统错误");
+		},
+		success : function(data) {
+			$.operate.saveSuccess(data);
+		}
+	});
+}
+
+
+</script>
+
+
+</body>
+
+
+</html>

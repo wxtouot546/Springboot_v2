@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fc.test.mapper.auto.ThDiscussRelationGroupMapper">
+  <resultMap id="BaseResultMap" type="com.fc.test.model.auto.ThDiscussRelationGroup">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="discuss_id" jdbcType="INTEGER" property="discussId" />
+    <result column="discuss_group_id" jdbcType="INTEGER" property="discussGroupId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+<sql id="Base_Column_List">
+	  	  	      	id,
+       	  	      	discuss_id,
+       	  	      	discuss_group_id,
+       	  	      	create_time,
+       	  	    	  	update_time
+       	</sql>
+<sql id="Base_Column_List1">
+	  	  	      	regp.id,
+       	  	      	regp.discuss_id,
+       	  	      	ds.discuss_name discussName,
+       	  	      	regp.discuss_group_id,
+					gp.discuss_group_name discussGroupName,
+       	  	      	regp.create_time,
+       	  	    	  	regp.update_time
+       	</sql>
+  <select id="selectByExample" parameterType="com.fc.test.model.auto.ThDiscussRelationGroupExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from th_discuss_relation_group
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample1" parameterType="com.fc.test.model.auto.ThDiscussRelationGroup" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List1" />
+    from th_discuss_relation_group regp
+    LEFT JOIN th_discuss ds on ds.id = regp.discuss_id
+	LEFT JOIN th_discuss_group gp on gp.id = regp.discuss_group_id
+	<where>
+		<if test="searchText != null">
+			regp.discuss_id in ( select kk.id from th_discuss kk where kk.discuss_name like concat('%',#{searchText},'%'))
+		</if>
+	</where>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from th_discuss_relation_group
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from th_discuss_relation_group
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.fc.test.model.auto.ThDiscussRelationGroupExample">
+    delete from th_discuss_relation_group
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  
+  <insert id="insert" parameterType="com.fc.test.model.auto.ThDiscussRelationGroup">
+    insert into th_discuss_relation_group (
+      	  	       id,
+       	  	       discuss_id,
+       	  	       discuss_group_id,
+       	  	       create_time,
+       	  	    	  update_time
+       	    )
+    values (
+	  	  	      	#{id,jdbcType=INTEGER},
+       	  	      	#{discussId,jdbcType=INTEGER},
+       	  	      	#{discussGroupId,jdbcType=INTEGER},
+       	  	      	#{createTime,jdbcType=TIMESTAMP},
+       	  	    	  #{updateTime,jdbcType=TIMESTAMP}
+       	    )
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.fc.test.model.auto.ThDiscussRelationGroup">
+    insert into th_discuss_relation_group
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+          
+      <if test="id != null">
+        id,
+      </if>
+      
+         
+      <if test="discussId != null">
+        discuss_id,
+      </if>
+      
+         
+      <if test="discussGroupId != null">
+        discuss_group_id,
+      </if>
+      
+         
+      <if test="createTime != null">
+        create_time,
+      </if>
+      
+         
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      
+         </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+          <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+          <if test="discussId != null">
+        #{discussId,jdbcType=INTEGER},
+      </if>
+          <if test="discussGroupId != null">
+        #{discussGroupId,jdbcType=INTEGER},
+      </if>
+          <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+          <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+        </trim>
+  </insert>
+  
+  <select id="countByExample" parameterType="com.fc.test.model.auto.ThDiscussRelationGroupExample" resultType="java.lang.Long">
+    select count(*) from th_discuss_relation_group
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  
+  <update id="updateByExampleSelective" parameterType="map">
+    update th_discuss_relation_group
+    <set>
+          <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+          <if test="record.discussId != null">
+        discuss_id = #{record.discussId,jdbcType=INTEGER},
+      </if>
+          <if test="record.discussGroupId != null">
+        discuss_group_id = #{record.discussGroupId,jdbcType=INTEGER},
+      </if>
+          <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+          <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+         
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  
+  
+  <update id="updateByExample" parameterType="map">
+    update th_discuss_relation_group
+    set
+            	     	 id = #{record.id,jdbcType=INTEGER},
+    	         	     	 discuss_id = #{record.discussId,jdbcType=INTEGER},
+    	         	     	 discuss_group_id = #{record.discussGroupId,jdbcType=INTEGER},
+    	         	     	 create_time = #{record.createTime,jdbcType=TIMESTAMP},
+    	         	     	 update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+    	         <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  
+  
+      <update id="updateByPrimaryKeySelective" parameterType="com.fc.test.model.auto.ThDiscussRelationGroup">
+    update th_discuss_relation_group
+    <set>
+                          <if test="discussId != null">
+        discuss_id = #{discussId,jdbcType=INTEGER},
+      </if>
+                      <if test="discussGroupId != null">
+        discuss_group_id = #{discussGroupId,jdbcType=INTEGER},
+      </if>
+                      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+                      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+              </set>
+    where 
+            id = #{id,jdbcType=INTEGER}
+                                          
+  </update>
+
+      	      	   	      	   	      	   	      	   	      	
+
+  <update id="updateByPrimaryKey" parameterType="com.fc.test.model.auto.ThDiscussRelationGroup">
+    update th_discuss_relation_group
+    set 
+             	        	    	 			discuss_id = #{discussId,jdbcType=INTEGER},
+		     	        	    	 			discuss_group_id = #{discussGroupId,jdbcType=INTEGER},
+		     	        	    	 			create_time = #{createTime,jdbcType=TIMESTAMP},
+		     	        	    	 			update_time = #{updateTime,jdbcType=TIMESTAMP}
+		     	        where 
+            id = #{id,jdbcType=INTEGER}
+                                            
+  </update>
+  
+                             
+</mapper>
