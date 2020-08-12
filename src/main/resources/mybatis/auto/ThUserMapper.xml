@@ -120,6 +120,12 @@
 		<if test="searchText != null">
 			us.user_id like concat('%',#{searchText},'%')
 		</if>
+		<if test="yongh != null">
+			us.user_id like concat('%',#{yongh},'%')
+		</if>
+		<if test="yonghuzu != null">
+			gp.id  = #{yonghuzu}
+		</if>
 	</where>
   </select>
   <select id="selectAll" parameterType="com.fc.test.model.auto.ThUser" resultMap="BaseResultMap">

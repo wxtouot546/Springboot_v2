@@ -96,6 +96,13 @@
     from th_discuss
     where id = #{id,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectByPrimaryName" parameterType="com.fc.test.model.auto.ThDiscuss" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from th_discuss
+    where discuss_name = #{discussName}
+  </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from th_discuss
@@ -123,7 +130,7 @@
        	    )
   </insert>
   
-  <insert id="insertSelective" parameterType="com.fc.test.model.auto.ThDiscuss">
+  <insert id="insertSelective" parameterType="com.fc.test.model.auto.ThDiscuss" useGeneratedKeys="true" keyProperty="id">
     insert into th_discuss
     <trim prefix="(" suffix=")" suffixOverrides=",">
           

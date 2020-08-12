@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" 
       xmlns:sec="http://www.pollix.at/thymeleaf/shiro">
-<head th:replace="admin/common/html/tableHead :: tableHead(~{::title},~{::link},~{::style})">
+<head th:replace="admin/common/html/tableHead :: head(~{::title},~{::link},~{::style})">
 
 <title th:text=${title}></title>
 <!-- 这儿引用单独的css link -->
@@ -9,7 +9,6 @@
 <link rel="stylesheet" th:href="@{/static/admin/assets/js/button/ladda/ladda.min.css}">
 <!-- bootstrap-table表单样式 -->
 <link th:href="@{/static/admin/assets/js/bootstrap/css/bootstrap-table/bootstrap-table.min.css}" rel="stylesheet"/>
-
 <!-- 用户界面自定义css -->
 <link th:href="@{/static/admin/user/css/user-add.css}" rel="stylesheet"/>
 <style type="text/css">
@@ -20,11 +19,10 @@
     margin-right: 6px !important;
 }
 </style>
-
 </head>
 
 <body>
-      	   	      	      	      	      	      	      	      	      	      	      	      	      	      	      
+
 <div class="content-wrap">
 	<div class="row">
 		<div class="col-sm-12">
@@ -33,55 +31,44 @@
 				</div>
 				<div class="body-nest" id="element">
 					<div class="panel-body">
-						<form  class="form-horizontal m" id="form-edit" th:object="${ThTask}">
-							<input id="id" name="id" type="hidden" th:field="*{id}"/>
-							<input id="userIds1" name="userIds1" type="hidden" th:value="*{userIds}"/>
+						<form  class="form-horizontal m" id="form-add">
 						
 									<div class="form-group">
 										<label class="col-sm-3 control-label " id="tiezi">帖子url：</label>
 										<div class="col-sm-8">
-											<input class="form-control" type="text" id="url" name="url" th:value="*{url}"/>
+											<input class="form-control" type="text" id="url" name="url"/>
 										</div>
 									</div>
-
+									
 								
 									<div class="form-group">
 										<label class="col-sm-3 control-label ">类型：</label>
 										<div class="row">
 									        <div class="col-xs-6" style="height: 33px;">
 									          <!--引入相关的CSS JS后  直接加个   selectpicker就行-->
-									            <select id="sel" th:field="${ThTask.type}" th:value="${ThTask.type}" name="sel" class="form-control valid" style="height: 100%;width: 100%;">
-									                <!-- <option th:selected="${ThTask.type == '1'}" value="1">顶贴</option> -->
-									                <option th:selected="${ThTask.type == '2'}" value="2">刷分</option>
-									                <!-- <option th:selected="${ThTask.type == '3'}" value="3">刷贴</option> -->
+									            <select id="sel" name="sel" class="form-control valid" style="height: 100%;width: 100%;">
+									                <option value="1">顶贴</option>
+									                <!-- <option value="2">刷分</option>
+									                <option value="3">刷贴</option> -->
 									            </select>
 									        </div>
 									    </div>
 									</div>
-
-								
+									
 									<div class="form-group">
-										<label class="col-sm-3 control-label " id="huifushuliang">浏览量：</label>
+										<label class="col-sm-3 control-label " id="huifushuliang">回复数量：</label>
 										<div class="col-sm-8">
-											<input class="form-control" type="text" id="number" name="number" th:value="*{number}" placeholder="如果不填默认回复1条" onchange="if(!/(^0$)|(^99999$)|(^\d{1,2}$)/.test(value)){value='';alert('回复数量请输入1-99999的整数!');}"/>
+											<input class="form-control" type="text" id="number" name="number" placeholder="如果不填默认回复1条" onchange="if(!/(^0$)|(^99999$)|(^\d{1,2}$)/.test(value)){value='';alert('回复数量请输入1-99999的整数!');}"/>
 										</div>
 									</div>
-
-								
-									<!-- <div class="form-group">
-										<label class="col-sm-3 control-label ">已经完成数量：</label>
-										<div class="col-sm-8">
-											<input class="form-control" type="text" id="oldNumber" name="oldNumber" th:value="*{oldNumber}"/>
-										</div>
-									</div> -->
-
+									
 									<div class="form-group">
 										<label class="col-sm-3 control-label ">用户组：</label>
 										<div class="row">
 									        <div class="col-xs-6" style="height: 33px;">
 									          <!--引入相关的CSS JS后  直接加个   selectpicker就行-->
 									            <select id="sel1" name="sel1" class="form-control valid" style="height: 100%;width: 100%;">
-									                <option th:selected="${usergroup.id} == ${ThTask.userGroupId}" th:each="usergroup : ${listgroup}" th:value="${usergroup.id}" th:text="${usergroup.userGroupName}">
+									                <option th:each="usergroup : ${listgroup}" th:value="${usergroup.id}" th:text="${usergroup.userGroupName}">
 									            </select>
 									        </div>
 									    </div>
@@ -96,28 +83,27 @@
 									                <option th:each="user : ${thlist}" th:value="${user.id}" th:text="${user.userId}"  >
 									                th:checked="${#lists.contains(userRoleList, role.id)}" 
 									            </select> -->
-									            <input class="inputc"  type="checkbox" name="inputc" th:each="user : ${thlist}" th:value="${user.id}" th:text="${user.userId}+'        '" />
+									            <input class="inputc" th:each="user:${thlist}"  type="checkbox" name="inputc" th:value="${user.id}" th:text="${user.userId}+'        '" />
 									        </div>
 									    </div>
 									</div>
-
+								
 									<div class="form-group">
 										<label class="col-sm-3 control-label ">评论组：</label>
 										<div class="row">
 									        <div class="col-xs-6" style="height: 33px;">
 									          <!--引入相关的CSS JS后  直接加个   selectpicker就行-->
 									            <select id="sel3" name="sel3" class="form-control valid" style="height: 100%;width: 100%;">
-									                <option th:selected="${th.id} == ${ThTask.discussGroupId}" th:each="th : ${thList}" th:value="${th.id}" th:text="${th.discussGroupName}">
+									                <option th:each="th : ${thList}" th:value="${th.id}" th:text="${th.discussGroupName}">
 									            </select>
 									        </div>
 									    </div>
 									</div>
-
 								
-									<!-- <div class="form-group" id="huifukaishi">
+									<div class="form-group" id="huifukaishi">
 										<label class="col-sm-3 control-label ">回复间隔开始（秒）：</label>
 										<div class="col-sm-8">
-											<input class="form-control" type="text" id="start" name="start" th:value="*{start}" placeholder="0" onchange="if(!/(^0$)|(^100$)|(^\d{1,2}$)/.test(value)){value='';alert('回复间隔开始（秒）请输入1-100的整数!');}"/>
+											<input class="form-control" type="text" id="start" name="start" placeholder="0" onchange="if(!/(^0$)|(^100$)|(^\d{1,2}$)/.test(value)){value='';alert('回复间隔开始（秒）请输入1-100的整数!');}"/>
 										</div>
 									</div>
 									
@@ -125,33 +111,30 @@
 									<div class="form-group" id="huifujieshu">
 										<label class="col-sm-3 control-label ">回复间隔结束（秒）：</label>
 										<div class="col-sm-8">
-											<input class="form-control" type="text" id="end" name="end"  th:value="*{end}" placeholder="0" onchange="if(!/(^0$)|(^100$)|(^\d{1,2}$)/.test(value)){value='';alert('回复间隔结束（秒）请输入1-100的整数!');}"/>
+											<input class="form-control" type="text" id="end" name="end" placeholder="0" onchange="if(!/(^0$)|(^100$)|(^\d{1,2}$)/.test(value)){value='';alert('回复间隔结束（秒）请输入1-100的整数!');}"/>
 										</div>
-									</div> -->
+									</div>
 									
-									<div class="form-group" id="moren">
+									<div class="form-group" id="moren" style="display:none;">
 										<label class="col-sm-3 control-label ">执行时间：</label>
 										<div class="col-sm-8">
 											<input class="form-control" type="text" value = "默认速度逻辑：2000/10分钟" readonly="true"/>
 										</div>
 									</div>
-
-								<!-- 
-									<div class="form-group">
+						
+									<!-- <div class="form-group">
 										<label class="col-sm-3 control-label ">创建时间：</label>
 										<div class="col-sm-8">
-											<input class="form-control MyDate" type="text" id="createTime" name="createTime" th:value="*{#dates.format(createTime,'yyyy-MM-dd HH:mm:ss')}"/>
-										</div>
-									</div>
-									
-								
-									<div class="form-group">
-										<label class="col-sm-3 control-label ">更新时间：</label>
-										<div class="col-sm-8">
-											<input class="form-control MyDate" type="text" id="updateTime" name="updateTime" th:value="*{#dates.format(updateTime,'yyyy-MM-dd HH:mm:ss')}"/>
+											<input class="form-control MyDate" type="text" id="createTime" name="createTime"/>
 										</div>
 									</div> -->
-									
+						
+									<!-- <div class="form-group">
+										<label class="col-sm-3 control-label ">更新时间：</label>
+										<div class="col-sm-8">
+											<input class="form-control MyDate" type="text" id="updateTime" name="updateTime"/>
+										</div>
+									</div> -->
 			
 									<div class="form-group">
 										<div class="form-control-static col-sm-offset-9">
@@ -159,7 +142,7 @@
 											<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
 										</div>
 									</div>
-						</form>
+						 </form>
 					</div>
 				</div>
 			</div>
@@ -178,10 +161,13 @@
 
 
 <!-- 弹窗 -->
-<script th:src="@{/static/admin/assets/js/layer/layer.js}" type="text/javascript"></script>
+<script  th:src="@{/static/admin/assets/js/layer/layer.js}" type="text/javascript"></script>
 <!-- 遮罩层 -->
-<script th:src="@{/static/admin/assets/js/blockUI/jquery.blockUI.js}" type="text/javascript"></script>
+<script  th:src="@{/static/admin/assets/js/blockUI/jquery.blockUI.js}" type="text/javascript"></script>
+<!-- jqueryForm序列化 -->
+<script  th:src="@{/static/js/jqueryFormSerializeJson.js}" type="text/javascript"></script>
 <script type="text/javascript">
+
 $(function(){
 	 $(".MyDate").datetimepicker({
 		 	format: "yyyy-mm-dd hh:00:00",
@@ -192,25 +178,8 @@ $(function(){
 	        initialDate:new Date(),
 	        minView: 1      
 	    });
-	var userIds1 = $("#userIds1").val();
-	var result = userIds1.split(",");
-	for(var i=0;i<result.length;i++){
-		if(url != null && url != undefined && url!=""){
-			$('input[name="inputc"]').each(function(){
-				if($(this).val() == result[i]){
-					$(this).attr("checked","checked");
-				}
-			});
-		}
-	}
+	
 })
-
-
-$("#form-edit").validate({
-	submitHandler : function(form) {
-		edit();
-	}
-});
 $("#sel1").change(function(){
 	var type = $(this).children('option:selected').val();
 	$.ajax({
@@ -268,8 +237,41 @@ $("#sel").change(function(){
 		$("#moren").show();
 	}
 })
-function edit() {
-	var id= $("#id").val();
+
+$("#form-add").validate({
+	/* rules:{
+		url:{
+			required:true,
+			minlength: 2,
+			maxlength: 20,
+			remote: {
+                url: rootPath + "/ThTaskController/checkNameUnique",
+                type: "post",
+                dataType: "json",
+                dataFilter: function(data, type) {
+                    if (data == "0")
+                    	return true;
+                    else 
+                    	return false;
+                }
+            }
+		}
+	},
+	messages: {
+        "url": {
+            remote: "已经存在"
+        }
+    }, */
+	submitHandler:function(form){
+		add();
+	}
+});
+
+/**
+ * 用户添加方法
+ */
+function add() {
+	/* var dataFormJson=$("#form-add").serialize(); */
 	var url = $("#url").val();
 	if(url == null || url == undefined || url==""){
 		$.modal.alertError("url必填 请输入");
@@ -302,20 +304,21 @@ function edit() {
 		$.modal.alertError("请选择评论组，如果没有请先添加评论组");
 		return false;
 	}
-	/* var start = $("#start").val();
-	var end = $("#end").val(); */
+	var start = $("#start").val();
+	var end = $("#end").val();
 	$.ajax({
 		cache : true,
 		type : "POST",
-		url : rootPath + "/ThTaskController/edit",
+		url : rootPath + "/ThTaskController/add",
 		data : {
-			id:id,
 			url:url,
 			type:type,
 			number:number,
 			userGroupId:userGroupId,
 			userIds:userIds,
 			discussGroupId:discussGroupId,
+			start:start,
+			end:end,
 			isdel:0
 		},
 		async : false,
@@ -327,7 +330,10 @@ function edit() {
 		}
 	});
 }
+
+
 </script>
+
 
 </body>
 

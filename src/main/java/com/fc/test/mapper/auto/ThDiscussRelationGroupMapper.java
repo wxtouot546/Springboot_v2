@@ -27,6 +27,9 @@ public interface ThDiscussRelationGroupMapper {
     List<ThDiscussRelationGroup> selectByExample1(ThDiscussRelationGroup record);
 		
     ThDiscussRelationGroup selectByPrimaryKey(Integer id);
+    
+    ThDiscussRelationGroup selectByPrimaryName(ThDiscussRelationGroup record);
+    ThDiscussRelationGroup selectByPrimaryName1(ThDiscussRelationGroup record);
 		
     int updateByExampleSelective(@Param("record") ThDiscussRelationGroup record, @Param("example") ThDiscussRelationGroupExample example);
 

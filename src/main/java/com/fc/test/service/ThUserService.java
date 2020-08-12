@@ -39,10 +39,18 @@ public class ThUserService implements BaseService<ThUser, ThUserExample>{
 	 * @param pageSize
 	 * @return
 	 */
-	 public PageInfo<ThUser> list(Tablepar tablepar,String searchText){
+	 public PageInfo<ThUser> list(Tablepar tablepar,String searchText,String yonghuzu,String yongh){
 	        Map<String,Object> map = new HashMap<String,Object>();
 	        if(null != searchText && searchText != "") {
 	        	map.put("searchText", searchText);
+	        }
+	        if(null != yongh && yongh != "") {
+	        	map.put("yongh", yongh);
+	        }
+	        if(null != yonghuzu && yonghuzu != "") {
+	        	if(!yonghuzu.equals("-1")) {
+	        		map.put("yonghuzu", yonghuzu);
+	        	}
 	        }
 	        PageHelper.startPage(tablepar.getPageNum(), tablepar.getPageSize());
 	        List<ThUser> list= thUserMapper.selectByu(map);

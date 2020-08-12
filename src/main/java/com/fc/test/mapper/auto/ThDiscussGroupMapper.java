@@ -30,6 +30,8 @@ public interface ThDiscussGroupMapper {
     List<ThDiscussGroup> selectAll(ThDiscussGroup record);
 		
     ThDiscussGroup selectByPrimaryKey(Integer id);
+    
+    ThDiscussGroup selectByPrimaryName(ThDiscussGroup record);
 		
     int updateByExampleSelective(@Param("record") ThDiscussGroup record, @Param("example") ThDiscussGroupExample example);
 

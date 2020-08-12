@@ -101,6 +101,12 @@
     from th_discuss_group
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectByPrimaryName" parameterType="com.fc.test.model.auto.ThDiscussGroup" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from th_discuss_group
+    where discuss_group_name = #{discussGroupName}
+  </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from th_discuss_group
@@ -128,7 +134,7 @@
        	    )
   </insert>
   
-  <insert id="insertSelective" parameterType="com.fc.test.model.auto.ThDiscussGroup">
+  <insert id="insertSelective" parameterType="com.fc.test.model.auto.ThDiscussGroup" useGeneratedKeys="true" keyProperty="id">
     insert into th_discuss_group
     <trim prefix="(" suffix=")" suffixOverrides=",">
           

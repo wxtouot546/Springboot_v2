@@ -37,10 +37,10 @@ import io.swagger.annotations.ApiOperation;
 
 @Api(value = "")
 @Controller
-@RequestMapping("/ThTaskController")
-public class ThTaskController extends BaseController{
+@RequestMapping("/ThTaskController1")
+public class ThTaskController1 extends BaseController{
 	
-	private String prefix = "gen/thTask";
+	private String prefix = "gen/thTask1";
 	@Autowired
 	private ThTaskService thTaskService;
 	@Autowired
@@ -59,11 +59,11 @@ public class ThTaskController extends BaseController{
 	 */
 	@ApiOperation(value = "分页跳转", notes = "分页跳转")
 	@GetMapping("/view")
-	@RequiresPermissions("gen:thTask:view")
+	@RequiresPermissions("gen:thTask:view1")
     public String view(ModelMap model)
     {	
 		String str="";
-		setTitle(model, new TitleVo("列表", str+"刷帖子阅读量", true,"欢迎进入"+str+"页面", true, false));
+		setTitle(model, new TitleVo("列表", str+"顶贴", true,"欢迎进入"+str+"页面", true, false));
         return prefix + "/list";
     }
 	
@@ -73,7 +73,7 @@ public class ThTaskController extends BaseController{
 	//@Log(title = "集合查询", action = "111")
 	@ApiOperation(value = "分页查询", notes = "分页查询")
 	@PostMapping("/list")
-	@RequiresPermissions("gen:thTask:list")
+	@RequiresPermissions("gen:thTask:list1")
 	@ResponseBody
 	public Object list(Tablepar tablepar,String searchText){
 		PageInfo<ThTask> page=thTaskService.list(tablepar,searchText) ; 
@@ -113,7 +113,7 @@ public class ThTaskController extends BaseController{
 	//@Log(title = "新增", action = "111")
    	@ApiOperation(value = "新增", notes = "新增")
 	@PostMapping("/add")
-	@RequiresPermissions("gen:thTask:add")
+	@RequiresPermissions("gen:thTask:add1")
 	@ResponseBody
 	public AjaxResult add(ThTask thTask){
    		if(thTask.getType().equals('3')) {
@@ -152,7 +152,7 @@ public class ThTaskController extends BaseController{
 	//@Log(title = "删除", action = "111")
 	@ApiOperation(value = "删除", notes = "删除")
 	@PostMapping("/remove")
-	@RequiresPermissions("gen:thTask:remove")
+	@RequiresPermissions("gen:thTask:remove1")
 	@ResponseBody
 	public AjaxResult remove(String ids){
 		int b=thTaskService.deleteByPrimaryKey(ids);
@@ -217,7 +217,7 @@ public class ThTaskController extends BaseController{
      */
     //@Log(title = "修改", action = "111")
     @ApiOperation(value = "修改保存", notes = "修改保存")
-    @RequiresPermissions("gen:thTask:edit")
+    @RequiresPermissions("gen:thTask:edit1")
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(ThTask record)

@@ -28,6 +28,8 @@ public interface ThDiscussMapper {
     List<ThDiscuss> selectByALL(ThDiscuss record);
 		
     ThDiscuss selectByPrimaryKey(Integer id);
+    
+    ThDiscuss selectByPrimaryName(ThDiscuss record);
 		
     int updateByExampleSelective(@Param("record") ThDiscuss record, @Param("example") ThDiscussExample example);
 

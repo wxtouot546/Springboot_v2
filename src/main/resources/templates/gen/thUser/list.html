@@ -14,7 +14,27 @@
 /**
 *这里写单独的css样式
 */
-
+.xiala{
+	line-height: 36px;
+    margin-left: 50px;
+}
+.xiala1{
+	line-height: 36px;
+   	margin-left: -64px !important;
+	width: 80px;
+}
+.ttjiao{
+	margin-left: -133px !important;
+    margin-top: -3px;
+}
+.ttjiao1{
+	margin-left: -133px !important;
+    margin-top: -3px;
+}
+.ttjiao2{
+	margin-left: -133px !important;
+    margin-top: -3px;
+}
 </style>
 
 </head>
@@ -83,18 +103,51 @@
                         <div class="body-nest" id="Blank_Page_Content">
                             <!-- 工具条 -->
                             <div class="btn-group hidden-xs" id="exampleTableEventsToolbar" role="group">
-                            	<button onclick="$.operate.add()" type="button" class="btn btn-primary">
+                            	<!-- <button onclick="$.operate.add()" type="button" class="btn btn-primary">
                                     <span class="entypo-plus-squared"></span>&nbsp;&nbsp;新增
-                                </button>
+                                </button> -->
                                <button onclick="$.operate.batRemove()" type="button" class="btn btn-info">
                                     <span class="entypo-trash"></span>&nbsp;&nbsp;删除
                                </button>
-                               
+                                <div class="btn-group hidden-xs" id="exampleTableEventsToolbar1" style="width: 400px;" role="group">
+									<label class="col-sm-3 control-label xiala">用户组：</label>
+									<div class="row">
+								        <div class="col-xs-6" style="height: 33px;">
+								            <select id="sel1" name="sel1" class="form-control valid" style="height: 100%;width: 100%; margin-left: -32px;">
+								                <option value="-1">请选择</option>
+								                <option th:each="zu : ${listgroup}" th:value="${zu.id}" th:text="${zu.userGroupName}">
+								            </select>
+								        </div>
+								    </div>
+								</div>
+								<form role="form" style="display: inline-block;">
+								<div class="btn-group hidden-xs" id="exampleTableEventsToolbar2" style="width: 400px;" role="group">
+									<label class="col-sm-3 control-label xiala1">用户：</label>
+									<div class="col-sm-8">
+										<input class="form-control" style="margin-left: -24px;" type="text" id="yonh" name="yongh"/>
+									</div>
+								</div>
+								<div class="btn-group hidden-xs" id="exampleTableEventsToolbar3" style="width: 67px;" role="group">
+									<button type="button" onclick="$.table.search(this)" class="btn btn-primary ttjiao">搜索</button>
+								</div>
+								<div class="btn-group hidden-xs" id="exampleTableEventsToolbar4" style="width: 67px;" role="group">
+									<button type="button" onclick="" class="btn btn-primary ttjiao1">导入</button>
+								</div>
+								<div class="btn-group hidden-xs" id="exampleTableEventsToolbar5" style="width: 20px;" role="group">
+									<button type="button" onclick="$.operate.add()" class="btn btn-primary ttjiao2">编辑用户的组</button>
+								</div>
+								</form>
                            </div>
                             <!-- 工具条 end-->
                            <table id="dataTable" class="table-striped footable-res footable metro-blue" data-page-size="6">
                                    
                            </table>
+                           <form role="form" class="form-inline" style="display:none">
+                             <div class="form-group">
+                                 <input type="text" name="yonghuzu" placeholder="搜索名字"class="form-control" id="sousuo">
+                             </div>
+                             <button onclick="$.table.search(this)" class="btn btn-success" id="yonghuzu" type="button"></button>
+                         </form>
                         </div>
                     </div>
                 </div>
@@ -142,7 +195,7 @@
 /**  请求URL配置   **/
 var dataUrl=window.rootPath+"/ThUserController/list";
 var removeUrl=window.rootPath+"/ThUserController/remove";
-var createUrl=window.rootPath+"/ThUserController/add";
+var createUrl=window.rootPath+"/ThUserRelationGroupController/add";
 var updateUrl=window.rootPath+"/ThUserController/edit/{id}";
 var exportUrl=window.rootPath+"/ThUserController/export";
   var options = {
@@ -252,6 +305,10 @@ var exportUrl=window.rootPath+"/ThUserController/export";
 $(function(){
 	var oTab=$.table.oTableInit(options);
 	oTab.Init();
+	$("#sel1").change(function(){
+		$("#sousuo").val($(this).val());
+		$("#yonghuzu").click();
+	})
 })
 </script>
 

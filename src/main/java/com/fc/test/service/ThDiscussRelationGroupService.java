@@ -91,6 +91,12 @@ public class ThDiscussRelationGroupService implements BaseService<ThDiscussRelat
 		return thDiscussRelationGroupMapper.insertSelective(record);
 	}
 	
+	public ThDiscussRelationGroup selectByPrimaryName(ThDiscussRelationGroup record) {
+		return thDiscussRelationGroupMapper.selectByPrimaryName(record);
+	}
+	public ThDiscussRelationGroup selectByPrimaryName1(ThDiscussRelationGroup record) {
+		return thDiscussRelationGroupMapper.selectByPrimaryName1(record);
+	}
 	
 	@Override
 	public int updateByExampleSelective(ThDiscussRelationGroup record, ThDiscussRelationGroupExample example) {

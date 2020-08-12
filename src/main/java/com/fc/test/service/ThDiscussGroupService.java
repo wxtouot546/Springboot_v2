@@ -51,11 +51,14 @@ public class ThDiscussGroupService implements BaseService<ThDiscussGroup, ThDisc
 	        return  pageInfo;
 	 }
 	 
-	 public List <ThDiscussGroup> listAll(ThDiscussGroup thDiscussGroup){
-	        List<ThDiscussGroup> list= thDiscussGroupMapper.selectByExample1(thDiscussGroup);
-	        return  list;
-	 }
-
+	public List <ThDiscussGroup> listAll(ThDiscussGroup thDiscussGroup){
+	       List<ThDiscussGroup> list= thDiscussGroupMapper.selectByExample1(thDiscussGroup);
+	       return  list;
+	}
+	public ThDiscussGroup selectByPrimaryName(ThDiscussGroup record) {
+		ThDiscussGroup rhDiscussGroup= thDiscussGroupMapper.selectByPrimaryName(record);
+		return  rhDiscussGroup;
+	}
 	@Override
 	public int deleteByPrimaryKey(String ids) {
 					

@@ -18,8 +18,9 @@ public interface ThUserRelationGroupMapper {
     int deleteByExample(ThUserRelationGroupExample example);
 		
     int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryUser(Integer id);
     
-    ThUserRelationGroup selectByPrimaryuser(Integer id);
+    ThUserRelationGroup selectByPrimaryuser(ThUserRelationGroup thUserRelationGroup);
     
     ThUserRelationGroup selectByPrimaryuserALL(ThUserRelationGroup thUserRelationGroup);
     
@@ -32,6 +33,8 @@ public interface ThUserRelationGroupMapper {
     List<ThUserRelationGroup> selectByExample(ThUserRelationGroupExample example);
 		
     ThUserRelationGroup selectByPrimaryKey(Integer id);
+    
+    List<ThUserRelationGroup> selectByPrimaryuserid(Integer id);
 		
     int updateByExampleSelective(@Param("record") ThUserRelationGroup record, @Param("example") ThUserRelationGroupExample example);
 

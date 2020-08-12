@@ -11,7 +11,14 @@
 <link th:href="@{/static/admin/assets/js/bootstrap/css/bootstrap-table/bootstrap-table.min.css}" rel="stylesheet"/>
 <!-- 用户界面自定义css -->
 <link th:href="@{/static/admin/user/css/user-add.css}" rel="stylesheet"/>
-<style type="text/css"></style>
+<style type="text/css">
+.inputc{
+    margin-right: 10px;
+    width: 17px;
+    height: 17px;
+    margin-right: 6px !important;
+}
+</style>
 </head>
 
 <body>
@@ -25,6 +32,7 @@
 				<div class="body-nest" id="element">
 					<div class="panel-body">
 						<form  class="form-horizontal m" id="form-add">
+						<input id="groupIds" name="groupIds" type="hidden" th:value="*{groupIds}"/>
 						
 									<!-- <div class="form-group">
 										<label class="col-sm-3 control-label ">用户：</label>
@@ -49,12 +57,14 @@
 			                        </div>
 			                        <div class="form-group">
 										<label class="col-sm-3 control-label">用户组：</label>
-			                            <div class="row">
-									        <div class="col-xs-6" style="height: 33px;">
+										<div class="row">
+									        <div id="yh" class="col-xs-6" style="height: auto; min-height:33px;font-size: 17px;    line-height: 33px;">
 									          <!--引入相关的CSS JS后  直接加个   selectpicker就行-->
-									            <select id="sel1" name="sel1" class="form-control valid" style="height: 100%;width: 100%;">
-									                <option th:each="usergroup : ${listgroup}" th:value="${usergroup.id}" th:text="${usergroup.userGroupName}">
-									            </select>
+									            <!-- <select id="sel2" name="sel2" class="form-control valid" style="height: 100%;width: 100%;" multiple="multiple"; size="4">
+									                <option th:each="user : ${thlist}" th:value="${user.id}" th:text="${user.userId}"  >
+									                th:checked="${#lists.contains(userRoleList, role.id)}" 
+									            </select> -->
+									            <input class="inputc" th:each="usergroup : ${listgroup}"  type="checkbox" name="inputc" th:value="${usergroup.id}" th:text="${usergroup.userGroupName}+'        '" />
 									        </div>
 									    </div>
 			                        </div>
@@ -89,7 +99,7 @@
 			
 									<div class="form-group">
 										<div class="form-control-static col-sm-offset-9">
-											<button type="submit" class="btn btn-primary">提交</button>
+											<button type="button" onclick="adds()" class="btn btn-primary">提交</button>
 											<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
 										</div>
 									</div>
@@ -131,6 +141,18 @@ $(function(){
 	        initialDate:new Date(),
 	        minView: 1      
 	    });
+	 
+	 	var goupId = $("#groupIds").val();
+	 	if(goupId != null && goupId != undefined && goupId!=""){
+			var result = goupId.split(",");
+			for(var i=0;i<result.length;i++){
+				$('input[name="inputc"]').each(function(){
+					if($(this).val() == result[i]){
+						$(this).attr("checked","checked");
+					}
+				});
+			}
+	 	}
 	 /* resetComboBox("select[name='sel']", {
 		 noneSelectedText : "请选择"
 		 }); */
@@ -138,8 +160,47 @@ $(function(){
 	  /*$("#sel1").selectpicker('refresh');     //完成需要的功能后 手动刷新对应的select
 
 	 $("#sel1").selectpicker('val',2);  */
+	 
 	
 })
+
+$("#sel").change(function(){
+	var userId = $("#sel option:selected").val();
+	$.ajax({
+		cache : true,
+		type : "POST",
+		url : rootPath + "/ThUserRelationGroupController/chaek",
+		dataType:"text",
+		data : {
+			userId:userId
+		},
+		async : false,
+		error : function(request) {
+			alert("系统错误");
+		},
+		success : function(data) {
+			var valg = data;
+			// 无论是否成功都清除
+			$('input[name="inputc"]').each(function(){
+				$(this).prop("checked", false);
+			});
+			diaoyong(valg);
+		}
+	});
+})
+function diaoyong(valg){
+	if(valg != null && valg != undefined && valg!=""){
+		var result = valg.split(",");
+		for(var i=0;i<result.length;i++){
+			$('input[name="inputc"]').each(function(){
+				if($(this).val() == result[i]){
+					$(this).prop("checked",true);
+				}
+			});
+			
+		}
+	}
+}
 $("#form-add").validate({
 	/* rules:{
 		gorupId:{
@@ -172,11 +233,25 @@ $("#form-add").validate({
 /**
  * 用户添加方法
  */
-function add() {
+function adds() {
 	// 用户id
 	var userId = $("#sel option:selected").val();
-	// 用户组id
-	var gorupId = $("#sel1 option:selected").val();
+	var isChecked = $('.inputc').is(":checked");
+	if(isChecked == false){
+		$.modal.alertError("请选择用户组");
+		return false;
+	}
+	var proNmCheck =$('input[name="inputc"]:checked');
+	var groupName = "";
+	var len = 1;
+	for (var i = 0; i < proNmCheck.length; i++,len++) {
+		if(len == proNmCheck.length){
+			groupName += proNmCheck[i].value;
+		}else{
+			groupName += proNmCheck[i].value +",";
+		}
+	}
+	
 	var dataFormJson=$("#form-add").serialize();
 	$.ajax({
 		cache : true,
@@ -184,7 +259,7 @@ function add() {
 		url : rootPath + "/ThUserRelationGroupController/add",
 		data : {
 			userId:userId,
-			gorupId:gorupId
+			groupName:groupName
 		},
 		async : false,
 		error : function(request) {
@@ -195,7 +270,6 @@ function add() {
 		}
 	});
 }
-
 
 </script>
 

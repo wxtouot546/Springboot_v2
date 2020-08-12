@@ -50,6 +50,10 @@ public class ThDiscussService implements BaseService<ThDiscuss, ThDiscussExample
 	        PageInfo<ThDiscuss> pageInfo = new PageInfo<ThDiscuss>(list);
 	        return  pageInfo;
 	 }
+	 
+	 public ThDiscuss selectByPrimaryName(ThDiscuss record) {
+		 return thDiscussMapper.selectByPrimaryName(record);
+	 }
 
 	@Override
 	public int deleteByPrimaryKey(String ids) {

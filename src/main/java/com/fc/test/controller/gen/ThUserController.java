@@ -17,10 +17,12 @@ import com.fc.test.common.base.BaseController;
 import com.fc.test.common.domain.AjaxResult;
 import com.fc.test.model.auto.ThIp;
 import com.fc.test.model.auto.ThUser;
+import com.fc.test.model.auto.ThUserGroup;
 import com.fc.test.model.custom.TableSplitResult;
 import com.fc.test.model.custom.Tablepar;
 import com.fc.test.model.custom.TitleVo;
 import com.fc.test.service.ThIpService;
+import com.fc.test.service.ThUserGroupService;
 import com.fc.test.service.ThUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,6 +37,8 @@ public class ThUserController extends BaseController{
 	private ThUserService thUserService;
 	@Autowired
 	private ThIpService thIpService;
+	@Autowired
+	private ThUserGroupService thUserGroupService;
 	
 	/**
 	 * 分页跳转
@@ -44,6 +48,10 @@ public class ThUserController extends BaseController{
 	@RequiresPermissions("gen:thUser:view")
     public String view(ModelMap model)
     {	
+		// 查询用户组信息
+    	ThUserGroup records = new ThUserGroup();
+    	List<ThUserGroup> listgroup = thUserGroupService.selectAll(records);
+    	model.addAttribute("listgroup",listgroup);
 		String str="";
 		setTitle(model, new TitleVo("列表", str+"用户", true,"欢迎进入"+str+"页面", true, false));
         return prefix + "/list";
@@ -57,8 +65,8 @@ public class ThUserController extends BaseController{
 	@PostMapping("/list")
 	@RequiresPermissions("gen:thUser:list")
 	@ResponseBody
-	public Object list(Tablepar tablepar,String searchText){
-		PageInfo<ThUser> page=thUserService.list(tablepar,searchText) ; 
+	public Object list(Tablepar tablepar,String searchText,String yonghuzu,String yongh){
+		PageInfo<ThUser> page=thUserService.list(tablepar,searchText,yonghuzu,yongh) ; 
 		TableSplitResult<ThUser> result=new TableSplitResult<ThUser>(page.getPageNum(), page.getTotal(), page.getList()); 
 		return  result;
 	}

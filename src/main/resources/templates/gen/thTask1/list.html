@@ -14,10 +14,7 @@
 /**
 *这里写单独的css样式
 */
-.xiala{
-	line-height: 36px;
-    margin-left: 50px;
-}
+
 </style>
 
 </head>
@@ -87,32 +84,17 @@
                             <!-- 工具条 -->
                             <div class="btn-group hidden-xs" id="exampleTableEventsToolbar" role="group">
                             	<button onclick="$.operate.add()" type="button" class="btn btn-primary">
-                                    <span class="entypo-plus-squared"></span>&nbsp;&nbsp;增加评论组与评论
+                                    <span class="entypo-plus-squared"></span>&nbsp;&nbsp;新增
                                 </button>
                                <button onclick="$.operate.batRemove()" type="button" class="btn btn-info">
                                     <span class="entypo-trash"></span>&nbsp;&nbsp;删除
                                </button>
-                               <div class="btn-group hidden-xs" id="exampleTableEventsToolbar1" style="width: 400px;" role="group">
-									<label class="col-sm-3 control-label xiala">评论组：</label>
-									<div class="row">
-								        <div class="col-xs-6" style="height: 33px;">
-								            <select id="sel1" name="sel1" class="form-control valid" style="height: 100%;width: 100%; margin-left: -32px;">
-								                <option th:each="thDiscussGroup : ${listgroup}" th:value="${thDiscussGroup.id}" th:text="${thDiscussGroup.discussGroupName}">
-								            </select>
-								        </div>
-								    </div>
-								</div>
+                               
                            </div>
                             <!-- 工具条 end-->
                            <table id="dataTable" class="table-striped footable-res footable metro-blue" data-page-size="6">
                                    
                            </table>
-                           <form role="form" class="form-inline" style="display:none">
-                             <div class="form-group">
-                                 <input type="text" name="searchText" placeholder="搜索名字"class="form-control" id="sousuo">
-                             </div>
-                             <button onclick="$.table.search(this)" class="btn btn-success" id="sousuoqueding" type="button"></button>
-                         </form>
                         </div>
                     </div>
                 </div>
@@ -156,13 +138,13 @@
 
 <script type="text/javascript">
 
-      	   	      	      	      	      	      
+      	   	      	      	      	      	      	      	      	      	      	      	      	      	      	      
 /**  请求URL配置   **/
-var dataUrl=window.rootPath+"/ThDiscussRelationGroupController/list";
-var removeUrl=window.rootPath+"/ThDiscussRelationGroupController/remove";
-var createUrl=window.rootPath+"/ThDiscussRelationGroupController/add";
-var updateUrl=window.rootPath+"/ThDiscussRelationGroupController/edit/{id}";
-var exportUrl=window.rootPath+"/ThDiscussRelationGroupController/export";
+var dataUrl=window.rootPath+"/ThTaskController1/list";
+var removeUrl=window.rootPath+"/ThTaskController1/remove";
+var createUrl=window.rootPath+"/ThTaskController1/add";
+var updateUrl=window.rootPath+"/ThTaskController1/edit/{id}";
+var exportUrl=window.rootPath+"/ThTaskController1/export";
   var options = {
 		dataUrl: dataUrl,
         createUrl: createUrl,
@@ -179,15 +161,79 @@ var exportUrl=window.rootPath+"/ThDiscussRelationGroupController/export";
 			{
 			    field: 'id',
 			    title: '主键id',
-		    	visible: false
+			    visible: false
 			},
 			{
-			    field: 'discussName',
-			    title: '评论'
+			    field: 'url',
+			    title: '帖子url'
+			},
+			{
+			    field: 'type',
+			    title: '类型',
+			    formatter : function (value, row, index) {
+			    	if (row['type'] == 1) {
+			    		return '顶贴';
+			   		}
+			    	if (row['type'] == 2) {
+			    		return '刷分';
+			   		}
+			    	if (row['type'] == 3) {
+			    		return '刷帖';
+			   		}
+		    		return '该类型无法显示';
+			    }
+			},
+			{
+			    field: 'number',
+			    title: '预计回复数量'
+			},
+			{
+			    field: 'oldNumber',
+			    title: '已经完成数量'
+			},
+			{
+			    field: 'userIds',
+			    title: '用户',
+			    cellStyle:formatTableUnit,
+			    formatter:paramsMatter 
+			},
+			{
+			    field: 'duscussIds',
+			    title: '评论',
+			    cellStyle:formatTableUnit,
+			    formatter:paramsMatter 
+			},
+			{
+			    field: 'groupName',
+			    title: '用户组'
 			},
 			{
 			    field: 'discussGroupName',
 			    title: '评论组'
+			},
+			{
+			    field: 'start',
+			    title: '回复间隔开始（秒）'
+			},
+			{
+			    field: 'end',
+			    title: '回复间隔结束（秒）'
+			},
+			{
+			    field: 'isdel',
+			    title: '状态',
+			    formatter : function (value, row, index) {
+			    	if (row['isdel'] == 0) {
+			    		return '开始';
+			   		}
+			    	if (row['type'] == 1) {
+			    		return '暂停';
+			   		}
+			    	if (row['type'] == 2) {
+			    		return '结束';
+			   		}
+		    		return '该类型无法显示';
+			    }
 			},
 			{
 			    field: 'createTime',
@@ -195,7 +241,7 @@ var exportUrl=window.rootPath+"/ThDiscussRelationGroupController/export";
 			},
 			{
 			    field: 'updateTime',
-			    title: '修改时间'
+			    title: '更新时间'
 			},
 
 /*	
@@ -229,14 +275,25 @@ var exportUrl=window.rootPath+"/ThDiscussRelationGroupController/export";
 			    }
 			}]
   };
+  function paramsMatter(value,row,index) {
+	    var span=document.createElement('span');
+	    span.setAttribute('title',value);
+	    span.innerHTML = value;
+	    return span.outerHTML;
+	}
+
+	function formatTableUnit(value, row, index) {
+	    return {
+		    css: {
+		        "white-space": 'nowrap',
+		        "text-overflow": 'ellipsis',
+		        "overflow": 'hidden'
+		    }
+		}
+	}
 $(function(){
 	var oTab=$.table.oTableInit(options);
 	oTab.Init();
-	$("#sel1").change(function(){
-		$("#sousuo").val($(this).val());
-		$("#sousuoqueding").click();
-	})
-	
 })
 </script>
 

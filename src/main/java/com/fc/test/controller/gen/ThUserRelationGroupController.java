@@ -81,10 +81,51 @@ public class ThUserRelationGroupController extends BaseController{
     	// 查询用户信息
     	ThUser record = new ThUser();
     	List<ThUser> thlist =  thUserService.selectAll(record);
+    	
+    	// 如果不为空就看看
+    	if(null != thlist && thlist.size() != 0) {
+    		List<ThUserRelationGroup>  gplist = thUserRelationGroupService.selectByPrimaryuserid(thlist.get(0).getId()+"");
+    		if(null != gplist && gplist.size() != 0) {
+    			String groupIds = "";
+    			int len = 1;
+    			for (int s = 0; s < gplist.size(); s++,len++) {
+    				if(len == gplist.size()){
+    					groupIds += gplist.get(s).getGorupId();
+    				}else{
+    					groupIds += gplist.get(s).getGorupId() +",";
+    				}
+    			}
+    			if(!groupIds.equals("")) {
+    				modelMap.addAttribute("groupIds",groupIds);
+    			}
+    		}
+    	}
     	modelMap.addAttribute("thlist",thlist);
     	modelMap.addAttribute("listgroup",listgroup);
         return prefix + "/add";
     }
+    
+   	@PostMapping("/chaek")
+   	@ResponseBody
+   	public String chaek(ThUserRelationGroup thUserRelationGroup) {
+   	// 如果不为空就看看
+	List<ThUserRelationGroup>  gplist = thUserRelationGroupService.selectByPrimaryuserid(thUserRelationGroup.getUserId()+"");
+	String groupIds = "";
+	if(null != gplist && gplist.size() != 0) {
+		int len = 1;
+		for (int s = 0; s < gplist.size(); s++,len++) {
+			if(len == gplist.size()){
+				groupIds += gplist.get(s).getGorupId();
+			}else{
+				groupIds += gplist.get(s).getGorupId() +",";
+			}
+		}
+	}
+   		
+   		
+   		return groupIds;
+   	}
+    
 	
 	/**
      * 新增
@@ -96,25 +137,24 @@ public class ThUserRelationGroupController extends BaseController{
 	@ResponseBody
 	public AjaxResult add(ThUserRelationGroup thUserRelationGroup){
    		String message = null;
-   		if(null == thUserRelationGroup.getGorupId()) {
-   			message = "用户组不能为空";
-   		}
    		if(null == thUserRelationGroup.getUserId()) {
    			message = "用户不能为空";
    		}
    		if(null != message) {
    			return shibai(message);
    		}
-   		// 判断 如果之前有过关联 那么就删除之前的记录
-   		thUserRelationGroupService.selectByPrimaryuser(thUserRelationGroup.getUserId());
-   		// 设置创建时间
-   		thUserRelationGroup.setCreateTime(new Date());
-		int b=thUserRelationGroupService.insertSelective(thUserRelationGroup);
-		if(b>0){
-			return success();
-		}else{
-			return error();
-		}
+   		// 先删除所有记录
+   		thUserRelationGroupService.deleteByPrimaryUser(thUserRelationGroup.getUserId());
+   		// 因为是逗号分割  所以要拿出来循环一遍
+   		String val = thUserRelationGroup.getGroupName();
+   		String[] groupId = val.split(",");
+   		for(int i = 0; i < groupId.length; i++) {
+   			thUserRelationGroup.setGorupId(Integer.parseInt(groupId[i]));
+   	   		// 设置创建时间
+   	   		thUserRelationGroup.setCreateTime(new Date());
+   			thUserRelationGroupService.insertSelective(thUserRelationGroup);
+   		}
+		return success();
 	}
 	
 	/**

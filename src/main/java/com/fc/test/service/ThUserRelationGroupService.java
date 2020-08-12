@@ -65,6 +65,14 @@ public class ThUserRelationGroupService implements BaseService<ThUserRelationGro
 	}
 	
 	
+	
+	
+	public List<ThUserRelationGroup> selectByPrimaryuserid(String id) {
+		Integer id1 = Integer.valueOf(id);
+		return thUserRelationGroupMapper.selectByPrimaryuserid(id1);
+		
+	}
+	
 	@Override
 	public ThUserRelationGroup selectByPrimaryKey(String id) {
 				
@@ -94,11 +102,16 @@ public class ThUserRelationGroupService implements BaseService<ThUserRelationGro
 	/**
 	 * 判断是否有用户
 	 */
-	public void selectByPrimaryuser(Integer id) {
-		ThUserRelationGroup idk  = thUserRelationGroupMapper.selectByPrimaryuser(id);
+	public void selectByPrimaryuser(ThUserRelationGroup thUserRelationGroup) {
+		ThUserRelationGroup idk  = thUserRelationGroupMapper.selectByPrimaryuser(thUserRelationGroup);
 		if(null != idk) {
 			thUserRelationGroupMapper.deleteByPrimaryKey(idk.getId());
 		}
+	}
+	
+	
+	public void deleteByPrimaryUser(Integer id) {
+		thUserRelationGroupMapper.deleteByPrimaryUser(id);
 	}
 	/**
 	 * 判断是否有用户

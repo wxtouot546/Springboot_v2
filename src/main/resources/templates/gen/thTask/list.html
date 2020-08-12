@@ -5,6 +5,8 @@
 
 <title th:text=${title}></title>
 <!-- 这儿引用单独的css link -->
+<script type="text/javascript" th:src="@{/static/admin/assets/js/tipso.min.js}"></script>
+<link rel="stylesheet" th:href="@{/static/admin/assets/css/tipso.min.css}">
 <!-- Ladda for Bootstrap 3按钮加载进度插件 -->
 <link rel="stylesheet" th:href="@{/static/admin/assets/js/button/ladda/ladda.min.css}">
 <!-- bootstrap-table表单样式 -->
@@ -165,7 +167,7 @@ var exportUrl=window.rootPath+"/ThTaskController/export";
 			},
 			{
 			    field: 'url',
-			    title: 'url'
+			    title: '帖子url'
 			},
 			{
 			    field: 'type',
@@ -185,7 +187,7 @@ var exportUrl=window.rootPath+"/ThTaskController/export";
 			},
 			{
 			    field: 'number',
-			    title: '预计完成数量'
+			    title: '预计浏览量'
 			},
 			{
 			    field: 'oldNumber',
@@ -193,11 +195,15 @@ var exportUrl=window.rootPath+"/ThTaskController/export";
 			},
 			{
 			    field: 'userIds',
-			    title: '用户'
+			    title: '用户',
+			    cellStyle:formatTableUnit,
+			    formatter:paramsMatter 
 			},
 			{
 			    field: 'duscussIds',
-			    title: '评论id（多个逗号分割）'
+			    title: '评论',
+			    cellStyle:formatTableUnit,
+			    formatter:paramsMatter 
 			},
 			{
 			    field: 'groupName',
@@ -207,14 +213,21 @@ var exportUrl=window.rootPath+"/ThTaskController/export";
 			    field: 'discussGroupName',
 			    title: '评论组'
 			},
-			{
+			/* {
 			    field: 'start',
 			    title: '回复间隔开始（秒）'
-			},
+			}, */
 			{
+			    field: 'start',
+			    title: '刷帖速度',
+			    formatter : function (value, row, index) {
+		    		return '默认速度逻辑:2000/10分钟';
+			    }
+			},
+			/* {
 			    field: 'end',
 			    title: '回复间隔结束（秒）'
-			},
+			}, */
 			{
 			    field: 'isdel',
 			    title: '状态',
@@ -271,9 +284,33 @@ var exportUrl=window.rootPath+"/ThTaskController/export";
 			    }
 			}]
   };
+  
+  
+ function paramsMatter(value,row,index) {
+    var span=document.createElement('span');
+    span.setAttribute('title',value);
+    span.innerHTML = value;
+    return span.outerHTML;
+}
+
+function formatTableUnit(value, row, index) {
+    return {
+	    css: {
+	        "white-space": 'nowrap',
+	        "text-overflow": 'ellipsis',
+	        "overflow": 'hidden'
+	    }
+	}
+}
 $(function(){
 	var oTab=$.table.oTableInit(options);
 	oTab.Init();
+	$("[data-toggle='tooltip']").tooltip();
+	 $('.tip').each(function(){
+		 $(this).tipso({
+	        useTitle: false
+	    });
+	 });
 })
 </script>
 

@@ -51,6 +51,10 @@ public class ThDiscussRelationGroupController extends BaseController{
 	@RequiresPermissions("gen:thDiscussRelationGroup:view")
     public String view(ModelMap model)
     {	
+		// 查询评论组信息
+    	ThDiscussGroup record = new ThDiscussGroup();
+    	List<ThDiscussGroup> listgroup = thDiscussGroupService.selectAll(record);
+    	model.addAttribute("listgroup",listgroup);
 		String str="";
 		setTitle(model, new TitleVo("列表", str+"评论组管理评论", true,"欢迎进入"+str+"页面", true, false));
         return prefix + "/list";
@@ -65,6 +69,7 @@ public class ThDiscussRelationGroupController extends BaseController{
 	@RequiresPermissions("gen:thDiscussRelationGroup:list")
 	@ResponseBody
 	public Object list(Tablepar tablepar,String searchText){
+		
 		PageInfo<ThDiscussRelationGroup> page=thDiscussRelationGroupService.list(tablepar,searchText) ; 
 		TableSplitResult<ThDiscussRelationGroup> result=new TableSplitResult<ThDiscussRelationGroup>(page.getPageNum(), page.getTotal(), page.getList()); 
 		return  result;
@@ -97,8 +102,47 @@ public class ThDiscussRelationGroupController extends BaseController{
 	@RequiresPermissions("gen:thDiscussRelationGroup:add")
 	@ResponseBody
 	public AjaxResult add(ThDiscussRelationGroup thDiscussRelationGroup){
+   		int groupid = 0;
+   		int thDiscussId = 0;
+   		// 在这判断新增逻辑   如果评论没有就新加评论  如果 没有评论组 就添加评论组
+   		String discussName = thDiscussRelationGroup.getDiscussName();
+   		ThDiscuss th1 = new ThDiscuss();
+   		th1.setDiscussName(discussName);
+   		// 评论
+   		ThDiscuss thDiscuss = thDiscussService.selectByPrimaryName(th1);
+   		// 如果存在就拿到id  不存在就插入一条
+   		if(null == thDiscuss) {
+   			thDiscuss = new ThDiscuss();
+   			thDiscuss.setDiscussName(discussName);
+   			thDiscuss.setCreateTime(new Date());
+   			thDiscussService.insertSelective(thDiscuss);
+   			thDiscussId = thDiscuss.getId();
+   		}else {
+   			thDiscussId = thDiscuss.getId();
+   		}
+   		// 评论组
+   		String discussGroupName = thDiscussRelationGroup.getDiscussGroupName();
+   		ThDiscussGroup record = new ThDiscussGroup();
+   		record.setDiscussGroupName(discussGroupName);
+   		ThDiscussGroup diRecord = thDiscussGroupService.selectByPrimaryName(record);
+   		
+   		if(null == diRecord) {
+   			diRecord = new ThDiscussGroup();
+   			diRecord.setCreateTime(new Date());
+   			diRecord.setDiscussGroupName(discussGroupName);
+   			thDiscussGroupService.insertSelective(diRecord);
+   			groupid = diRecord.getId();
+   		}else {
+   			groupid = diRecord.getId();
+   		}
+   		thDiscussRelationGroup.setDiscussId(thDiscussId);
+   		thDiscussRelationGroup.setDiscussGroupId(groupid);
    		thDiscussRelationGroup.setCreateTime(new Date());
-		int b=thDiscussRelationGroupService.insertSelective(thDiscussRelationGroup);
+   		ThDiscussRelationGroup ts = thDiscussRelationGroupService.selectByPrimaryName(thDiscussRelationGroup);
+		if(null != ts) {
+			return shibai("记录已经存在");
+		}
+   		int b=thDiscussRelationGroupService.insertSelective(thDiscussRelationGroup);
 		if(b>0){
 			return success();
 		}else{
@@ -175,10 +219,50 @@ public class ThDiscussRelationGroupController extends BaseController{
     @RequiresPermissions("gen:thDiscussRelationGroup:edit")
     @PostMapping("/edit")
     @ResponseBody
-    public AjaxResult editSave(ThDiscussRelationGroup record)
-    {
-    	record.setUpdateTime(new Date());
-        return toAjax(thDiscussRelationGroupService.updateByPrimaryKeySelective(record));
+    public AjaxResult editSave(ThDiscussRelationGroup ths)
+    {	
+    	int groupid = 0;
+   		int thDiscussId = 0;
+   		// 在这判断新增逻辑   如果评论没有就新加评论  如果 没有评论组 就添加评论组
+   		String discussName = ths.getDiscussName();
+   		ThDiscuss th1 = new ThDiscuss();
+   		th1.setDiscussName(discussName);
+   		// 评论
+   		ThDiscuss thDiscuss = thDiscussService.selectByPrimaryName(th1);
+   		// 如果存在就拿到id  不存在就插入一条
+   		if(null == thDiscuss) {
+   			thDiscuss = new ThDiscuss();
+   			thDiscuss.setDiscussName(discussName);
+   			thDiscuss.setCreateTime(new Date());
+   			thDiscussService.insertSelective(thDiscuss);
+   			thDiscussId = thDiscuss.getId();
+   		}else {
+   			thDiscussId = thDiscuss.getId();
+   		}
+   		// 评论组
+   		String discussGroupName = ths.getDiscussGroupName();
+   		ThDiscussGroup record = new ThDiscussGroup();
+   		record.setDiscussGroupName(discussGroupName);
+   		ThDiscussGroup diRecord = thDiscussGroupService.selectByPrimaryName(record);
+   		
+   		if(null == diRecord) {
+   			diRecord = new ThDiscussGroup();
+   			diRecord.setCreateTime(new Date());
+   			diRecord.setDiscussGroupName(discussGroupName);
+   			thDiscussGroupService.insertSelective(diRecord);
+   			groupid = diRecord.getId();
+   		}else {
+   			groupid = diRecord.getId();
+   		}
+   		ths.setDiscussId(thDiscussId);
+   		ths.setDiscussGroupId(groupid);
+   		ths.setCreateTime(new Date());
+   		ThDiscussRelationGroup ts = thDiscussRelationGroupService.selectByPrimaryName1(ths);
+		if(null != ts) {
+			return shibai("记录已经存在");
+		}
+		ths.setUpdateTime(new Date());
+        return toAjax(thDiscussRelationGroupService.updateByPrimaryKeySelective(ths));
     }
 
     

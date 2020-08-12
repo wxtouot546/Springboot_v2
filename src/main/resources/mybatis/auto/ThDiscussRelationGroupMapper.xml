@@ -104,15 +104,32 @@
 	LEFT JOIN th_discuss_group gp on gp.id = regp.discuss_group_id
 	<where>
 		<if test="searchText != null">
-			regp.discuss_id in ( select kk.id from th_discuss kk where kk.discuss_name like concat('%',#{searchText},'%'))
+			regp.discuss_group_id in ( select kk.id from th_discuss_group kk where kk.id = #{searchText} )
 		</if>
 	</where>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
+    <include refid="Base_Column_List1" />
+    from th_discuss_relation_group regp
+    LEFT JOIN th_discuss ds on ds.id = regp.discuss_id
+	LEFT JOIN th_discuss_group gp on gp.id = regp.discuss_group_id
+    where regp.id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByPrimaryName" parameterType="com.fc.test.model.auto.ThDiscussRelationGroup" resultMap="BaseResultMap">
+    select 
     <include refid="Base_Column_List" />
     from th_discuss_relation_group
-    where id = #{id,jdbcType=INTEGER}
+    where discuss_id = #{discussId}
+    AND discuss_group_id = #{discussGroupId}
+  </select>
+  <select id="selectByPrimaryName1" parameterType="com.fc.test.model.auto.ThDiscussRelationGroup" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from th_discuss_relation_group
+    where discuss_id = #{discussId}
+    AND discuss_group_id = #{discussGroupId}
+    AND id != #{id}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
