@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.fc.test.mapper.auto.ThUserGroupMapper">
-  <resultMap id="BaseResultMap" type="com.fc.test.model.auto.ThUserGroup">
+<mapper namespace="com.fc.test.mapper.auto.ThTaskSplitMapper">
+  <resultMap id="BaseResultMap" type="com.fc.test.model.auto.ThTaskSplit">
     <result column="id" jdbcType="INTEGER" property="id" />
-    <result column="user_group_name" jdbcType="VARCHAR" property="userGroupName" />
+    <result column="task_id" jdbcType="INTEGER" property="taskId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="discuss_id" jdbcType="INTEGER" property="discussId" />
+    <result column="type" jdbcType="INTEGER" property="type" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -67,17 +70,30 @@
   </sql>
 <sql id="Base_Column_List">
 	  	  	      	id,
-       	  	      	user_group_name,
+       	  	      	task_id,
+       	  	      	user_id,
+       	  	      	discuss_id,
+       	  	      	type,
        	  	      	create_time,
        	  	    	  	update_time
        	</sql>
-  <select id="selectByExample" parameterType="com.fc.test.model.auto.ThUserGroupExample" resultMap="BaseResultMap">
+<sql id="Base_Column_List2">
+	  	  	      	ps.id,
+       	  	      	ps.task_id,
+       	  	      	ps.user_id,
+       	  	      	us.user_id userValue,
+       	  	      	ps.discuss_id,
+       	  	      	ps.type,
+       	  	      	ps.create_time,
+       	  	    	  	ps.update_time
+       	</sql>
+  <select id="selectByExample" parameterType="com.fc.test.model.auto.ThTaskSplitExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from th_user_group
+    from th_task_split
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -85,53 +101,75 @@
       order by ${orderByClause}
     </if>
   </select>
-  
-  <select id="selectAll" parameterType="com.fc.test.model.auto.ThUserGroup" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from th_user_group
-    <where>
-    	<if test="userGroupName != null">
-    		user_group_name = #{userGroupName}
-	    </if>
-    </where>
-  </select>
-  
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from th_user_group
+    from th_task_split
     where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAllius" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List2" />
+    from th_task_split ps
+    LEFT JOIN th_user us ON ps.user_id = us.id
+    where ps.task_id = #{taskId}
+    AND ps.type = 0
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from th_user_group
+    delete from th_task_split
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.fc.test.model.auto.ThUserGroupExample">
-    delete from th_user_group
+  <delete id="deleteByExample" parameterType="com.fc.test.model.auto.ThTaskSplitExample">
+    delete from th_task_split
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   
-  <insert id="insert" parameterType="com.fc.test.model.auto.ThUserGroup">
-    insert into th_user_group (
+  <insert id="insert" parameterType="com.fc.test.model.auto.ThTaskSplit">
+    insert into th_task_split (
       	  	       id,
-       	  	       user_group_name,
+       	  	       task_id,
+       	  	       user_id,
+       	  	       discuss_id,
+       	  	       type,
        	  	       create_time,
        	  	    	  update_time
        	    )
     values (
 	  	  	      	#{id,jdbcType=INTEGER},
-       	  	      	#{userGroupName,jdbcType=VARCHAR},
+       	  	      	#{taskId,jdbcType=INTEGER},
+       	  	      	#{userId,jdbcType=INTEGER},
+       	  	      	#{discussId,jdbcType=INTEGER},
+       	  	      	#{type,jdbcType=INTEGER},
        	  	      	#{createTime,jdbcType=TIMESTAMP},
        	  	    	  #{updateTime,jdbcType=TIMESTAMP}
        	    )
   </insert>
+  <insert id="insertList" parameterType="java.util.List">
+    insert into th_task_split (
+       	  	       task_id,
+       	  	       user_id,
+       	  	       discuss_id,
+       	  	       type,
+       	  	       create_time
+       	    )
+    values 
+    <foreach collection="list" item="item" index="index" separator=",">
+				(
+					#{item.taskId},
+					#{item.userId},
+					#{item.discussId},
+					#{item.type},
+					#{item.createTime}
+				)
+	</foreach>
+	
+  </insert>
   
-  <insert id="insertSelective" parameterType="com.fc.test.model.auto.ThUserGroup" useGeneratedKeys="true" keyProperty="id">
-    insert into th_user_group
+  <insert id="insertSelective" parameterType="com.fc.test.model.auto.ThTaskSplit">
+    insert into th_task_split
     <trim prefix="(" suffix=")" suffixOverrides=",">
           
       <if test="id != null">
@@ -139,8 +177,23 @@
       </if>
       
          
-      <if test="userGroupName != null">
-        user_group_name,
+      <if test="taskId != null">
+        task_id,
+      </if>
+      
+         
+      <if test="userId != null">
+        user_id,
+      </if>
+      
+         
+      <if test="discussId != null">
+        discuss_id,
+      </if>
+      
+         
+      <if test="type != null">
+        type,
       </if>
       
          
@@ -158,8 +211,17 @@
           <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-          <if test="userGroupName != null">
-        #{userGroupName,jdbcType=VARCHAR},
+          <if test="taskId != null">
+        #{taskId,jdbcType=INTEGER},
+      </if>
+          <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+          <if test="discussId != null">
+        #{discussId,jdbcType=INTEGER},
+      </if>
+          <if test="type != null">
+        #{type,jdbcType=INTEGER},
       </if>
           <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -170,21 +232,30 @@
         </trim>
   </insert>
   
-  <select id="countByExample" parameterType="com.fc.test.model.auto.ThUserGroupExample" resultType="java.lang.Long">
-    select count(*) from th_user_group
+  <select id="countByExample" parameterType="com.fc.test.model.auto.ThTaskSplitExample" resultType="java.lang.Long">
+    select count(*) from th_task_split
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   
   <update id="updateByExampleSelective" parameterType="map">
-    update th_user_group
+    update th_task_split
     <set>
           <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
       </if>
-          <if test="record.userGroupName != null">
-        user_group_name = #{record.userGroupName,jdbcType=VARCHAR},
+          <if test="record.taskId != null">
+        task_id = #{record.taskId,jdbcType=INTEGER},
+      </if>
+          <if test="record.userId != null">
+        user_id = #{record.userId,jdbcType=INTEGER},
+      </if>
+          <if test="record.discussId != null">
+        discuss_id = #{record.discussId,jdbcType=INTEGER},
+      </if>
+          <if test="record.type != null">
+        type = #{record.type,jdbcType=INTEGER},
       </if>
           <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -201,10 +272,13 @@
   
   
   <update id="updateByExample" parameterType="map">
-    update th_user_group
+    update th_task_split
     set
             	     	 id = #{record.id,jdbcType=INTEGER},
-    	         	     	 user_group_name = #{record.userGroupName,jdbcType=VARCHAR},
+    	         	     	 task_id = #{record.taskId,jdbcType=INTEGER},
+    	         	     	 user_id = #{record.userId,jdbcType=INTEGER},
+    	         	     	 discuss_id = #{record.discussId,jdbcType=INTEGER},
+    	         	     	 type = #{record.type,jdbcType=INTEGER},
     	         	     	 create_time = #{record.createTime,jdbcType=TIMESTAMP},
     	         	     	 update_time = #{record.updateTime,jdbcType=TIMESTAMP}
     	         <if test="_parameter != null">
@@ -213,11 +287,20 @@
   </update>
   
   
-      <update id="updateByPrimaryKeySelective" parameterType="com.fc.test.model.auto.ThUserGroup">
-    update th_user_group
+      <update id="updateByPrimaryKeySelective" parameterType="com.fc.test.model.auto.ThTaskSplit">
+    update th_task_split
     <set>
-                          <if test="userGroupName != null">
-        user_group_name = #{userGroupName,jdbcType=VARCHAR},
+                          <if test="taskId != null">
+        task_id = #{taskId,jdbcType=INTEGER},
+      </if>
+                      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+                      <if test="discussId != null">
+        discuss_id = #{discussId,jdbcType=INTEGER},
+      </if>
+                      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
       </if>
                       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -228,21 +311,24 @@
               </set>
     where 
             id = #{id,jdbcType=INTEGER}
-                                  
+                                                          
   </update>
 
-      	      	   	      	   	      	   	      	
+      	      	   	      	   	      	   	      	   	      	   	      	   	      	
 
-  <update id="updateByPrimaryKey" parameterType="com.fc.test.model.auto.ThUserGroup">
-    update th_user_group
+  <update id="updateByPrimaryKey" parameterType="com.fc.test.model.auto.ThTaskSplit">
+    update th_task_split
     set 
-             	        	    	 			user_group_name = #{userGroupName,jdbcType=VARCHAR},
+             	        	    	 			task_id = #{taskId,jdbcType=INTEGER},
+		     	        	    	 			user_id = #{userId,jdbcType=INTEGER},
+		     	        	    	 			discuss_id = #{discussId,jdbcType=INTEGER},
+		     	        	    	 			type = #{type,jdbcType=INTEGER},
 		     	        	    	 			create_time = #{createTime,jdbcType=TIMESTAMP},
 		     	        	    	 			update_time = #{updateTime,jdbcType=TIMESTAMP}
 		     	        where 
             id = #{id,jdbcType=INTEGER}
-                                    
+                                                            
   </update>
   
-                        
+                                       
 </mapper>

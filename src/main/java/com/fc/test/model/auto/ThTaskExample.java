@@ -15,10 +15,20 @@ public class ThTaskExample {
     protected String orderByClause;
 
     protected boolean distinct;
+    
+    protected String status;
 
     protected List<Criteria> oredCriteria;
+    
+    public String getStatus() {
+		return status;
+	}
 
-    public ThTaskExample() {
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public ThTaskExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 

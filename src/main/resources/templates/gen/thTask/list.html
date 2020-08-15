@@ -147,12 +147,16 @@ var removeUrl=window.rootPath+"/ThTaskController/remove";
 var createUrl=window.rootPath+"/ThTaskController/add";
 var updateUrl=window.rootPath+"/ThTaskController/edit/{id}";
 var exportUrl=window.rootPath+"/ThTaskController/export";
+var startUrl=window.rootPath+"/ThTaskController/start";
+var endUrl=window.rootPath+"/ThTaskController/end";
   var options = {
 		dataUrl: dataUrl,
         createUrl: createUrl,
         updateUrl: updateUrl,
         removeUrl:removeUrl,
         exportUrl: exportUrl,
+        startUrl:startUrl,
+        endUrl:endUrl,
         sortName: "roleSort",
         modalName: "",
         search: false,
@@ -194,14 +198,16 @@ var exportUrl=window.rootPath+"/ThTaskController/export";
 			    title: '已经完成数量'
 			},
 			{
-			    field: 'userIds',
+			    field: 'userNames',
 			    title: '用户',
+			    width: '150px',
 			    cellStyle:formatTableUnit,
 			    formatter:paramsMatter 
 			},
 			{
-			    field: 'duscussIds',
+			    field: 'duscussNames',
 			    title: '评论',
+			    width: '150px',
 			    cellStyle:formatTableUnit,
 			    formatter:paramsMatter 
 			},
@@ -235,10 +241,10 @@ var exportUrl=window.rootPath+"/ThTaskController/export";
 			    	if (row['isdel'] == 0) {
 			    		return '开始';
 			   		}
-			    	if (row['type'] == 1) {
+			    	if (row['isdel'] == 1) {
 			    		return '暂停';
 			   		}
-			    	if (row['type'] == 2) {
+			    	if (row['isdel'] == 2) {
 			    		return '结束';
 			   		}
 		    		return '该类型无法显示';
@@ -272,9 +278,21 @@ var exportUrl=window.rootPath+"/ThTaskController/export";
 			      	return actions.join('');			    
 				 }
 			}
-*/
+*/			
+			{
+			    title: '任务执行',
+			    width: '150px',
+			    formatter: function (value, row, index) {
+			        var id = row.id;
+			        var actions = [];
+			        actions.push('<a class="btn btn-success btn-xs"  href="#" onclick="$.operate.start(\'' + row.id + '\')"><i class="fa fa-edit"></i>开始</a> ');
+			        actions.push('<a class="btn btn-danger btn-xs" href="#" onclick="$.operate.end(\'' + row.id + '\')"><i class="fa fa-remove"></i>暂停</a>');
+			        return actions.join('');
+			    }
+			},
 			{
 			    title: '操作',
+			    width: '150px',
 			    formatter: function (value, row, index) {
 			        var id = row.id;
 			        var actions = [];
@@ -289,6 +307,7 @@ var exportUrl=window.rootPath+"/ThTaskController/export";
  function paramsMatter(value,row,index) {
     var span=document.createElement('span');
     span.setAttribute('title',value);
+    span.setAttribute('style','white-space: nowrap;text-overflow: ellipsis;overflow: hidden;width: 120px; display:inline-block');
     span.innerHTML = value;
     return span.outerHTML;
 }

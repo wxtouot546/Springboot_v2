@@ -155,6 +155,20 @@
                 var url = $.common.isEmpty(id) ? $.table._option.createUrl : $.table._option.createUrl.replace("{id}", id);
                 $.modal.open("添加" + $.table._option.modalName, url);
             },
+            start: function(id) {
+            	var url = $.common.isEmpty(id) ? $.table._option.startUrl : $.table._option.startUrl.replace("{id}", id);
+            	var data = {
+                        "ids": id
+                    };
+            	$.operate.submit(url, "post", "json", data);
+            },
+            end: function(id) {
+            	var url = $.common.isEmpty(id) ? $.table._option.endUrl : $.table._option.endUrl.replace("{id}", id);
+            	var data = {
+                        "ids": id
+                    };
+            	$.operate.submit(url, "post", "json", data);
+            },
             edit: function(id) {
                 var url = $.table._option.updateUrl.replace("{id}", id);
                 $.modal.open("修改" + $.table._option.modalName, url);

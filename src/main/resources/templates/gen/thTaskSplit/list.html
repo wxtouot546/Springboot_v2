@@ -36,7 +36,7 @@
                 <div class="col-sm-12">
                 <!-- 搜索条件 -->
                 
-                	 <!-- <div class="nest" id="inlineClose">
+                	 <div class="nest" id="inlineClose">
                             <div class="title-alt">
                                 <h6>搜索条件</h6>
                                 <div class="titleClose">
@@ -62,7 +62,7 @@
                                     </form>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
                 	<!-- END搜索条件 -->
                     <!-- 空白页开始-->
                     <div class="nest" id="Blank_PageClose">
@@ -138,23 +138,19 @@
 
 <script type="text/javascript">
 
-      	   	      	      	      	      	      	      	      	      	      	      	      	      	      	      
+      	   	      	      	      	      	      	      	      
 /**  请求URL配置   **/
-var dataUrl=window.rootPath+"/ThTaskController1/list";
-var removeUrl=window.rootPath+"/ThTaskController1/remove";
-var createUrl=window.rootPath+"/ThTaskController1/add";
-var updateUrl=window.rootPath+"/ThTaskController1/edit/{id}";
-var exportUrl=window.rootPath+"/ThTaskController1/export";
-var startUrl=window.rootPath+"/ThTaskController1/start";
-var endUrl=window.rootPath+"/ThTaskController1/end";
+var dataUrl=window.rootPath+"/ThTaskSplitController/list";
+var removeUrl=window.rootPath+"/ThTaskSplitController/remove";
+var createUrl=window.rootPath+"/ThTaskSplitController/add";
+var updateUrl=window.rootPath+"/ThTaskSplitController/edit/{id}";
+var exportUrl=window.rootPath+"/ThTaskSplitController/export";
   var options = {
 		dataUrl: dataUrl,
         createUrl: createUrl,
         updateUrl: updateUrl,
         removeUrl:removeUrl,
         exportUrl: exportUrl,
-        startUrl:startUrl,
-        endUrl:endUrl,
         sortName: "roleSort",
         modalName: "",
         search: false,
@@ -164,82 +160,23 @@ var endUrl=window.rootPath+"/ThTaskController1/end";
 			},
 			{
 			    field: 'id',
-			    title: '主键id',
-			    visible: false
+			    title: '主键id'
 			},
 			{
-			    field: 'url',
-			    title: '帖子url'
+			    field: 'taskId',
+			    title: '帖子id'
+			},
+			{
+			    field: 'userId',
+			    title: '用户id'
+			},
+			{
+			    field: 'discussId',
+			    title: '评论id'
 			},
 			{
 			    field: 'type',
-			    title: '类型',
-			    formatter : function (value, row, index) {
-			    	if (row['type'] == 1) {
-			    		return '顶贴';
-			   		}
-			    	if (row['type'] == 2) {
-			    		return '刷分';
-			   		}
-			    	if (row['type'] == 3) {
-			    		return '刷帖';
-			   		}
-		    		return '该类型无法显示';
-			    }
-			},
-			{
-			    field: 'number',
-			    title: '预计回复数量'
-			},
-			{
-			    field: 'oldNumber',
-			    title: '已经完成数量'
-			},
-			{
-			    field: 'userNames',
-			    title: '用户',
-			    width: '150px',
-			    cellStyle:formatTableUnit,
-			    formatter:paramsMatter 
-			},
-			{
-			    field: 'duscussNames',
-			    title: '评论',
-			    width: '150px',
-			    cellStyle:formatTableUnit,
-			    formatter:paramsMatter 
-			},
-			{
-			    field: 'groupName',
-			    title: '用户组'
-			},
-			{
-			    field: 'discussGroupName',
-			    title: '评论组'
-			},
-			{
-			    field: 'start',
-			    title: '回复间隔开始（秒）'
-			},
-			{
-			    field: 'end',
-			    title: '回复间隔结束（秒）'
-			},
-			{
-			    field: 'isdel',
-			    title: '状态',
-			    formatter : function (value, row, index) {
-			    	if (row['isdel'] == 0) {
-			    		return '开始';
-			   		}
-			    	if (row['isdel'] == 1) {
-			    		return '暂停';
-			   		}
-			    	if (row['isdel'] == 2) {
-			    		return '结束';
-			   		}
-		    		return '该类型无法显示';
-			    }
+			    title: '(0未执行，1已执行)'
 			},
 			{
 			    field: 'createTime',
@@ -269,21 +206,9 @@ var endUrl=window.rootPath+"/ThTaskController1/end";
 			      	return actions.join('');			    
 				 }
 			}
-*/			
-			{
-			    title: '任务执行',
-			    width: '150px',
-			    formatter: function (value, row, index) {
-			        var id = row.id;
-			        var actions = [];
-			        actions.push('<a class="btn btn-success btn-xs"  href="#" onclick="$.operate.start(\'' + row.id + '\')"><i class="fa fa-edit"></i>开始</a> ');
-			        actions.push('<a class="btn btn-danger btn-xs" href="#" onclick="$.operate.end(\'' + row.id + '\')"><i class="fa fa-remove"></i>暂停</a>');
-			        return actions.join('');
-			    }
-			},
+*/
 			{
 			    title: '操作',
-			    width: '150px',
 			    formatter: function (value, row, index) {
 			        var id = row.id;
 			        var actions = [];
@@ -291,26 +216,8 @@ var endUrl=window.rootPath+"/ThTaskController1/end";
 			        actions.push('<a class="btn btn-danger btn-xs" href="#" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
 			        return actions.join('');
 			    }
-			}
-			]
+			}]
   };
-  function paramsMatter(value,row,index) {
-	    var span=document.createElement('span');
-	    span.setAttribute('title',value);
-	    span.setAttribute('style','white-space: nowrap;text-overflow: ellipsis;overflow: hidden;width: 120px; display:inline-block');
-	    span.innerHTML = value;
-	    return span.outerHTML;
-	}
-
-	function formatTableUnit(value, row, index) {
-	    return {
-		    css: {
-		        "white-space": 'nowrap',
-		        "text-overflow": 'ellipsis',
-		        "overflow": 'hidden'
-		    }
-		}
-	}
 $(function(){
 	var oTab=$.table.oTableInit(options);
 	oTab.Init();

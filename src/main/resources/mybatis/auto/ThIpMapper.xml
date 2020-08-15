@@ -97,7 +97,10 @@
     from th_ip
     <where>
     	<if test="id != null">
-    		id = #{id}
+    		AND id = #{id}
+    	</if>
+    	<if test="ip != null">
+    		AND ip = #{ip}
     	</if>
     </where>
   </select>
@@ -140,7 +143,7 @@
        	    )
   </insert>
   
-  <insert id="insertSelective" parameterType="com.fc.test.model.auto.ThIp">
+  <insert id="insertSelective" parameterType="com.fc.test.model.auto.ThIp" useGeneratedKeys="true" keyProperty="id">
     insert into th_ip
     <trim prefix="(" suffix=")" suffixOverrides=",">
           

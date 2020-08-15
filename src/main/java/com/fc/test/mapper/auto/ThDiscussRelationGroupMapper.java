@@ -25,6 +25,8 @@ public interface ThDiscussRelationGroupMapper {
 
     List<ThDiscussRelationGroup> selectByExample(ThDiscussRelationGroupExample example);
     List<ThDiscussRelationGroup> selectByExample1(ThDiscussRelationGroup record);
+    // 根据评论组查询评论
+    List<ThDiscussRelationGroup> selectByPrimaryidd(@Param("discussGroupId") Integer discussGroupId);
 		
     ThDiscussRelationGroup selectByPrimaryKey(Integer id);
     

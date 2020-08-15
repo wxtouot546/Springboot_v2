@@ -132,6 +132,14 @@
     select
     <include refid="Base_Column_List" />
     from th_user
+    <where>
+	    <if test="userId != null">
+	    	AND	user_id = #{userId}
+	    </if>
+	    <if test="password != null">
+	    	AND	password = #{password}
+	    </if>
+    </where>
   </select>
   <select id="selectAllbyName" parameterType="com.fc.test.model.auto.ThUser" resultMap="BaseResultMap">
     select
@@ -139,6 +147,12 @@
     from th_user
     where id != #{id}
     AND user_id = #{userId}
+  </select>
+  <select id="selectAllbyisid" parameterType="com.fc.test.model.auto.ThUser" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from th_user
+    where id = #{id}
   </select>
   
   <select id="selectAllbygrop" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -192,7 +206,7 @@
        	    )
   </insert>
   
-  <insert id="insertSelective" parameterType="com.fc.test.model.auto.ThUser">
+  <insert id="insertSelective" parameterType="com.fc.test.model.auto.ThUser" useGeneratedKeys="true" keyProperty="id">
     insert into th_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
           

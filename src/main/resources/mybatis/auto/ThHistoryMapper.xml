@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.fc.test.mapper.auto.ThUserGroupMapper">
-  <resultMap id="BaseResultMap" type="com.fc.test.model.auto.ThUserGroup">
+<mapper namespace="com.fc.test.mapper.auto.ThHistoryMapper">
+  <resultMap id="BaseResultMap" type="com.fc.test.model.auto.ThHistory">
     <result column="id" jdbcType="INTEGER" property="id" />
-    <result column="user_group_name" jdbcType="VARCHAR" property="userGroupName" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="value" jdbcType="VARCHAR" property="value" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -67,71 +67,59 @@
   </sql>
 <sql id="Base_Column_List">
 	  	  	      	id,
-       	  	      	user_group_name,
-       	  	      	create_time,
-       	  	    	  	update_time
+       	  	      	user_id,
+       	  	      	value,
+       	  	    	  	create_time
        	</sql>
-  <select id="selectByExample" parameterType="com.fc.test.model.auto.ThUserGroupExample" resultMap="BaseResultMap">
+<sql id="Base_Column_List1">
+	  	  	      	h.id,
+	  	  	      	se.user_id userName,
+       	  	      	h.user_id,
+       	  	      	h.value,
+       	  	    	  	h.create_time
+       	</sql>
+  <select id="selectByExample" parameterType="com.fc.test.model.auto.ThHistoryExample" resultMap="BaseResultMap">
     select
-    <if test="distinct">
-      distinct
-    </if>
-    <include refid="Base_Column_List" />
-    from th_user_group
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
+    <include refid="Base_Column_List1" />
+    from th_history h
+    LEFT JOIN th_user se on h.user_id = se.id
+      order by h.create_time  DESC
   </select>
-  
-  <select id="selectAll" parameterType="com.fc.test.model.auto.ThUserGroup" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from th_user_group
-    <where>
-    	<if test="userGroupName != null">
-    		user_group_name = #{userGroupName}
-	    </if>
-    </where>
-  </select>
-  
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from th_user_group
+    from th_history
     where id = #{id,jdbcType=INTEGER}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from th_user_group
+    delete from th_history
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.fc.test.model.auto.ThUserGroupExample">
-    delete from th_user_group
+  <delete id="deleteByExample" parameterType="com.fc.test.model.auto.ThHistoryExample">
+    delete from th_history
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
   
-  <insert id="insert" parameterType="com.fc.test.model.auto.ThUserGroup">
-    insert into th_user_group (
+  <insert id="insert" parameterType="com.fc.test.model.auto.ThHistory">
+    insert into th_history (
       	  	       id,
-       	  	       user_group_name,
-       	  	       create_time,
-       	  	    	  update_time
+       	  	       user_id,
+       	  	       value,
+       	  	    	  create_time
        	    )
     values (
 	  	  	      	#{id,jdbcType=INTEGER},
-       	  	      	#{userGroupName,jdbcType=VARCHAR},
-       	  	      	#{createTime,jdbcType=TIMESTAMP},
-       	  	    	  #{updateTime,jdbcType=TIMESTAMP}
+       	  	      	#{userId,jdbcType=INTEGER},
+       	  	      	#{value,jdbcType=VARCHAR},
+       	  	    	  #{createTime,jdbcType=TIMESTAMP}
        	    )
   </insert>
   
-  <insert id="insertSelective" parameterType="com.fc.test.model.auto.ThUserGroup" useGeneratedKeys="true" keyProperty="id">
-    insert into th_user_group
+  <insert id="insertSelective" parameterType="com.fc.test.model.auto.ThHistory">
+    insert into th_history
     <trim prefix="(" suffix=")" suffixOverrides=",">
           
       <if test="id != null">
@@ -139,8 +127,13 @@
       </if>
       
          
-      <if test="userGroupName != null">
-        user_group_name,
+      <if test="userId != null">
+        user_id,
+      </if>
+      
+         
+      <if test="value != null">
+        value,
       </if>
       
          
@@ -148,49 +141,44 @@
         create_time,
       </if>
       
-         
-      <if test="updateTime != null">
-        update_time,
-      </if>
-      
          </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
           <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-          <if test="userGroupName != null">
-        #{userGroupName,jdbcType=VARCHAR},
+          <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+          <if test="value != null">
+        #{value,jdbcType=VARCHAR},
       </if>
           <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
       </if>
-          <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
         </trim>
   </insert>
   
-  <select id="countByExample" parameterType="com.fc.test.model.auto.ThUserGroupExample" resultType="java.lang.Long">
-    select count(*) from th_user_group
+  <select id="countByExample" parameterType="com.fc.test.model.auto.ThHistoryExample" resultType="java.lang.Long">
+    select count(*) from th_history
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   
   <update id="updateByExampleSelective" parameterType="map">
-    update th_user_group
+    update th_history
     <set>
           <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
       </if>
-          <if test="record.userGroupName != null">
-        user_group_name = #{record.userGroupName,jdbcType=VARCHAR},
+          <if test="record.userId != null">
+        user_id = #{record.userId,jdbcType=INTEGER},
+      </if>
+          <if test="record.value != null">
+        value = #{record.value,jdbcType=VARCHAR},
       </if>
           <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      </if>
-          <if test="record.updateTime != null">
-        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       </if>
          
     </set>
@@ -201,29 +189,29 @@
   
   
   <update id="updateByExample" parameterType="map">
-    update th_user_group
+    update th_history
     set
             	     	 id = #{record.id,jdbcType=INTEGER},
-    	         	     	 user_group_name = #{record.userGroupName,jdbcType=VARCHAR},
-    	         	     	 create_time = #{record.createTime,jdbcType=TIMESTAMP},
-    	         	     	 update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+    	         	     	 user_id = #{record.userId,jdbcType=INTEGER},
+    	         	     	 value = #{record.value,jdbcType=VARCHAR},
+    	         	     	 create_time = #{record.createTime,jdbcType=TIMESTAMP}
     	         <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
   
   
-      <update id="updateByPrimaryKeySelective" parameterType="com.fc.test.model.auto.ThUserGroup">
-    update th_user_group
+      <update id="updateByPrimaryKeySelective" parameterType="com.fc.test.model.auto.ThHistory">
+    update th_history
     <set>
-                          <if test="userGroupName != null">
-        user_group_name = #{userGroupName,jdbcType=VARCHAR},
+                          <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+                      <if test="value != null">
+        value = #{value,jdbcType=VARCHAR},
       </if>
                       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-                      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
               </set>
     where 
@@ -233,12 +221,12 @@
 
       	      	   	      	   	      	   	      	
 
-  <update id="updateByPrimaryKey" parameterType="com.fc.test.model.auto.ThUserGroup">
-    update th_user_group
+  <update id="updateByPrimaryKey" parameterType="com.fc.test.model.auto.ThHistory">
+    update th_history
     set 
-             	        	    	 			user_group_name = #{userGroupName,jdbcType=VARCHAR},
-		     	        	    	 			create_time = #{createTime,jdbcType=TIMESTAMP},
-		     	        	    	 			update_time = #{updateTime,jdbcType=TIMESTAMP}
+             	        	    	 			user_id = #{userId,jdbcType=INTEGER},
+		     	        	    	 			value = #{value,jdbcType=VARCHAR},
+		     	        	    	 			create_time = #{createTime,jdbcType=TIMESTAMP}
 		     	        where 
             id = #{id,jdbcType=INTEGER}
                                     

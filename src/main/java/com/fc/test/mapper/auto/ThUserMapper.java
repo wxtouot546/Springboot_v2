@@ -32,6 +32,7 @@ public interface ThUserMapper {
     List<ThUser> selectAllbygrop(Integer id);
     
     List<ThUser> selectAll(ThUser record);
+    ThUser selectAllbyisid(ThUser record);
     
     List<ThUser> selectAllbyName(ThUser record);
 		

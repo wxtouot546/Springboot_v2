@@ -97,6 +97,13 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
   
+  <select id="selectByPrimaryKeys" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from th_discuss
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
   <select id="selectByPrimaryName" parameterType="com.fc.test.model.auto.ThDiscuss" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

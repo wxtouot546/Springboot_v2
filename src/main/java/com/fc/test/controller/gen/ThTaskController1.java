@@ -76,7 +76,7 @@ public class ThTaskController1 extends BaseController{
 	@RequiresPermissions("gen:thTask:list1")
 	@ResponseBody
 	public Object list(Tablepar tablepar,String searchText){
-		PageInfo<ThTask> page=thTaskService.list(tablepar,searchText) ; 
+		PageInfo<ThTask> page=thTaskService.list(tablepar,searchText,"1") ; 
 		TableSplitResult<ThTask> result=new TableSplitResult<ThTask>(page.getPageNum(), page.getTotal(), page.getList()); 
 		return  result;
 	}
@@ -143,6 +143,43 @@ public class ThTaskController1 extends BaseController{
 			return error();
 		}
 	}
+   	
+   	/**
+	 * 任务开始
+	 * @param ids
+	 * @return
+	 */
+	//@Log(title = "删除", action = "111")
+	@ApiOperation(value = "任务开始", notes = "任务开始")
+	@PostMapping("/start")
+	@ResponseBody
+	public AjaxResult start(String ids){
+		boolean type = thTaskService.startOrEnd(ids,0);
+		if(type) {
+			return success();
+		}else {
+			return error();
+		}
+	}
+   	
+	/**
+	 * 任务结束
+	 * @param ids
+	 * @return
+	 */
+	//@Log(title = "删除", action = "111")
+	@ApiOperation(value = "任务结束", notes = "任务结束")
+	@PostMapping("/end")
+	@ResponseBody
+	public AjaxResult end(String ids){
+		boolean type = thTaskService.startOrEnd(ids,1);
+		if(type) {
+			return success();
+		}else {
+			return error();
+		}
+	}
+   	
 	
 	/**
 	 * 删除

@@ -52,7 +52,7 @@
 									          <!--引入相关的CSS JS后  直接加个   selectpicker就行-->
 									            <select id="sel" th:field="${ThTask.type}" th:value="${ThTask.type}" name="sel" class="form-control valid" style="height: 100%;width: 100%;">
 									                <!-- <option th:selected="${ThTask.type == '1'}" value="1">顶贴</option> -->
-									                <option th:selected="${ThTask.type == '2'}" value="2">刷分</option>
+									                <option th:selected="${ThTask.type == '3'}" value="2">刷分</option>
 									                <!-- <option th:selected="${ThTask.type == '3'}" value="3">刷贴</option> -->
 									            </select>
 									        </div>
@@ -297,6 +297,12 @@ function edit() {
 	}
 	var type = $("#sel option:selected").val();
 	var number = $("#number").val();
+	if(number != null && number != undefined && number !=""){
+		if(number <= 0){
+			$.modal.alertError("浏览量不能小于等于0");
+			return false;
+		}
+	}
 	var discussGroupId = $("#sel3 option:selected").val();
 	if(undefined == discussGroupId){
 		$.modal.alertError("请选择评论组，如果没有请先添加评论组");

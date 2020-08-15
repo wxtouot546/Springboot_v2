@@ -2,6 +2,8 @@ package com.fc.test.mapper.auto;
 
 import com.fc.test.model.auto.ThTask;
 import com.fc.test.model.auto.ThTaskExample;
+import com.fc.test.model.auto.ThTaskSplit;
+
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
@@ -22,7 +24,7 @@ public interface ThTaskMapper {
     int insert(ThTask record);
 
     int insertSelective(ThTask record);
-
+    
     List<ThTask> selectByExample(ThTaskExample example);
 		
     ThTask selectByPrimaryKey(Integer id);

@@ -53,6 +53,10 @@ public class ThTask implements Serializable {
 	@ApiModelProperty(value = "用户组id")
 	private Integer userGroupId;
 	
+	private String userNames;
+	
+	private String duscussNames;
+	
 	private String groupName;
 	
 	private String discussGroupName;
@@ -84,7 +88,22 @@ public class ThTask implements Serializable {
 	private Date updateTime;
 		
 	
-	
+	public String getDuscussNames() {
+		return duscussNames;
+	}
+
+	public void setDuscussNames(String duscussNames) {
+		this.duscussNames = duscussNames;
+	}
+
+	public String getUserNames() {
+		return userNames;
+	}
+
+	public void setUserNames(String userNames) {
+		this.userNames = userNames;
+	}
+
 	public String getDiscussGroupName() {
 		return discussGroupName;
 	}
