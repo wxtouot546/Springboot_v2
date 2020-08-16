@@ -2,6 +2,7 @@ package test;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -21,6 +22,7 @@ import com.fc.SpringbootStart;
 import com.fc.test.common.spring.SpringUtils;
 import com.fc.test.mapper.auto.GeneratorMapper;
 import com.fc.test.mapper.custom.TsysUserDao;
+import com.fc.test.util.xgltUtil;
 
 import cn.hutool.core.io.file.FileWriter;
 import cn.hutool.json.JSONUtil;
@@ -47,7 +49,7 @@ public class SpringbootTest {
 		//System.out.println(JSONUtil.toJsonStr(generatorMapper.queryColumns2("t_test")));
 		
 		
-		TsysUserDao dao=  SpringUtils.getBean(TsysUserDao.class);
+		/*TsysUserDao dao=  SpringUtils.getBean(TsysUserDao.class);
 		
 		Method[] methods= dao.getClass().getMethods();
 		for (Method method : methods) {
@@ -91,7 +93,18 @@ public class SpringbootTest {
         //创建静态文件,"text"是模板html名字
        
        System.out.println(templateEngine.process("example", context)) ;
-       
+      */ 
+		xgltUtil xglt = new xgltUtil();
+		try {
+			xglt.qidongfangwen(null);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+		
+		
 	}
 	
 

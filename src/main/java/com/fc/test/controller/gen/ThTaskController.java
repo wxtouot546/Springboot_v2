@@ -258,7 +258,9 @@ public class ThTaskController extends BaseController{
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(ThTask record)
-    {
+    {	
+    	
+    	record.setIsdel('0');
         return toAjax(thTaskService.updateByPrimaryKeySelective(record));
     }
 

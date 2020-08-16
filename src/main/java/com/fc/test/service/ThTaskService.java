@@ -30,6 +30,7 @@ import com.fc.test.model.auto.ThUser;
 import com.fc.test.model.custom.Tablepar;
 import com.fc.test.util.SnowflakeIdWorker;
 import com.fc.test.util.StringUtils;
+import com.fc.test.util.xgltUtil;
 
 /**
  *  ThTaskService
@@ -145,6 +146,22 @@ public class ThTaskService implements BaseService<ThTask, ThTaskExample>{
 	
 	@Override
 	public int updateByPrimaryKeySelective(ThTask record) {
+		thTaskSplitMapper.deleteByPrimaryKeys(record.getId());
+		// 创建任务
+		List<ThTaskSplit> sp = sps(record);
+		
+		if(null != sp && sp.size() != 0) {
+			thTaskSplitMapper.insertList(sp);
+			// 插入成功后面开始执行任务  爬虫   新启动一个线程 例如：tiezi+id
+			Thread thread = new Thread(){
+				public void run(){
+					pachong(record.getId());
+				}
+			};
+			// 线程名字
+			thread.setName("task"+record.getId());
+			thread.start();
+		}
 		return thTaskMapper.updateByPrimaryKeySelective(record);
 	}
 	
@@ -238,22 +255,35 @@ public class ThTaskService implements BaseService<ThTask, ThTaskExample>{
 	
 	public List<ThTaskSplit> sps(ThTask record) {
 		List <ThTaskSplit> list= new ArrayList<>();
-		String[] s1=record.getUserIds().split(",");
-		for(int t = 0; t < s1.length; t++) {
-			ThTaskSplit sp = new ThTaskSplit();
-			sp.setTaskId(record.getId());
-			sp.setUserId(Integer.parseInt(s1[t]));
-			// 根据评论组随机进行分配 根据评论组查询评论
-			List<ThDiscussRelationGroup> lls = thDiscussRelationGroupMapper.selectByPrimaryidd(record.getDiscussGroupId());
-			if(null == lls || lls.size() == 0) {
-				// 一定默认有一条评论
+		if(record.getType().equals('3')) {
+			for(int t = 0; t < record.getNumber(); t++) {
+				ThTaskSplit sp = new ThTaskSplit();
+				sp.setTaskId(record.getId());
+				sp.setUserId(0);
+				// 根据评论组随机进行分配 根据评论组查询评论
 				sp.setDiscussId(0);
-			}else {
-				sp.setDiscussId(lls.get((t+1)%lls.size()).getDiscussId());
+				sp.setType(0);
+				sp.setCreateTime(new Date());
+				list.add(sp);
 			}
-			sp.setType(0);
-			sp.setCreateTime(new Date());
-			list.add(sp);
+		}else {
+			String[] s1=record.getUserIds().split(",");
+			for(int t = 0; t < s1.length; t++) {
+				ThTaskSplit sp = new ThTaskSplit();
+				sp.setTaskId(record.getId());
+				sp.setUserId(Integer.parseInt(s1[t]));
+				// 根据评论组随机进行分配 根据评论组查询评论
+				List<ThDiscussRelationGroup> lls = thDiscussRelationGroupMapper.selectByPrimaryidd(record.getDiscussGroupId());
+				if(null == lls || lls.size() == 0) {
+					// 一定默认有一条评论
+					sp.setDiscussId(0);
+				}else {
+					sp.setDiscussId(lls.get((t+1)%lls.size()).getDiscussId());
+				}
+				sp.setType(0);
+				sp.setCreateTime(new Date());
+				list.add(sp);
+			}
 		}
 		
 		return list;
@@ -274,6 +304,9 @@ public class ThTaskService implements BaseService<ThTask, ThTaskExample>{
 				 for(ThTaskSplit ts :list) {
 					 
 					 // 爬虫
+					 //xgltUtil pachong = new xgltUtil();
+					 //pachong.qidongfangwen(null);
+					 
 					 // 线程沉睡50秒
 					 if(chaxun.getType().equals('3')) {
 						 Thread.sleep(3000);
@@ -291,8 +324,6 @@ public class ThTaskService implements BaseService<ThTask, ThTaskExample>{
 						ts.setUpdateTime(new Date());
 						thTaskSplitMapper.updateByPrimaryKeySelective(ts);
 						
-						 chaxun.setIsdel('2');
-						 thTaskMapper.updateByPrimaryKeySelective(chaxun);
 						continue;
 					}	
 					// 执行完任务  开始更新状态

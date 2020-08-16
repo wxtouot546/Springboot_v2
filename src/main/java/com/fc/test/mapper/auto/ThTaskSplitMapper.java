@@ -21,6 +21,8 @@ public interface ThTaskSplitMapper {
     List<ThTaskSplit> selectAllius(@Param("taskId") Integer taskId);
 		
     int deleteByPrimaryKey(Integer id);
+    
+    int deleteByPrimaryKeys(@Param("taskId") Integer taskId);
 		
     int insert(ThTaskSplit record);
     int insertList(@Param("list") List<ThTaskSplit> list);

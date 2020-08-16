@@ -120,6 +120,10 @@
     delete from th_task_split
     where id = #{id,jdbcType=INTEGER}
   </delete>
+  <delete id="deleteByPrimaryKeys" parameterType="java.lang.Integer">
+    delete from th_task_split
+    where task_id = #{taskId}
+  </delete>
   <delete id="deleteByExample" parameterType="com.fc.test.model.auto.ThTaskSplitExample">
     delete from th_task_split
     <if test="_parameter != null">

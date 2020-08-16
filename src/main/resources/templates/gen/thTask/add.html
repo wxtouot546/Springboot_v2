@@ -62,11 +62,11 @@
 										</div>
 									</div>
 									
-									<div class="form-group">
+									<!-- <div class="form-group">
 										<label class="col-sm-3 control-label ">用户组：</label>
 										<div class="row">
 									        <div class="col-xs-6" style="height: 33px;">
-									          <!--引入相关的CSS JS后  直接加个   selectpicker就行-->
+									          引入相关的CSS JS后  直接加个   selectpicker就行
 									            <select id="sel1" name="sel1" class="form-control valid" style="height: 100%;width: 100%;">
 									                <option th:each="usergroup : ${listgroup}" th:value="${usergroup.id}" th:text="${usergroup.userGroupName}">
 									            </select>
@@ -78,11 +78,11 @@
 										<label class="col-sm-3 control-label ">用户：</label>
 										<div class="row">
 									        <div id="yh" class="col-xs-6" style="height: auto; min-height:33px;font-size: 17px;    line-height: 33px;">
-									          <!--引入相关的CSS JS后  直接加个   selectpicker就行-->
-									            <!-- <select id="sel2" name="sel2" class="form-control valid" style="height: 100%;width: 100%;" multiple="multiple"; size="4">
+									          引入相关的CSS JS后  直接加个   selectpicker就行
+									            <select id="sel2" name="sel2" class="form-control valid" style="height: 100%;width: 100%;" multiple="multiple"; size="4">
 									                <option th:each="user : ${thlist}" th:value="${user.id}" th:text="${user.userId}"  >
 									                th:checked="${#lists.contains(userRoleList, role.id)}" 
-									            </select> -->
+									            </select>
 									            <input class="inputc" th:each="user:${thlist}"  type="checkbox" name="inputc" th:value="${user.id}" th:text="${user.userId}+'        '" />
 									        </div>
 									    </div>
@@ -92,13 +92,13 @@
 										<label class="col-sm-3 control-label ">评论组：</label>
 										<div class="row">
 									        <div class="col-xs-6" style="height: 33px;">
-									          <!--引入相关的CSS JS后  直接加个   selectpicker就行-->
+									          引入相关的CSS JS后  直接加个   selectpicker就行
 									            <select id="sel3" name="sel3" class="form-control valid" style="height: 100%;width: 100%;">
 									                <option th:each="th : ${thList}" th:value="${th.id}" th:text="${th.discussGroupName}">
 									            </select>
 									        </div>
 									    </div>
-									</div>
+									</div> -->
 								
 									<!-- <div class="form-group" id="huifukaishi">
 										<label class="col-sm-3 control-label ">回复间隔开始（秒）：</label>
@@ -277,7 +277,7 @@ function add() {
 		$.modal.alertError("url必填 请输入");
 		return false;
 	}
-	var userGroupId = $("#sel1 option:selected").val();
+	/* var userGroupId = $("#sel1 option:selected").val();
 	if(undefined == userGroupId){
 		$.modal.alertError("请选择用户组，如果没有请先添加用户组");
 		return false;
@@ -296,7 +296,7 @@ function add() {
 		}else{
 			userIds += proNmCheck[i].value +",";
 		}
-	}
+	} */
 	var type = $("#sel option:selected").val();
 	var number = $("#number").val();
 	if(number != null && number != undefined && number !=""){
@@ -305,11 +305,11 @@ function add() {
 			return false;
 		}
 	}
-	var discussGroupId = $("#sel3 option:selected").val();
+	/* var discussGroupId = $("#sel3 option:selected").val();
 	if(undefined == discussGroupId){
 		$.modal.alertError("请选择评论组，如果没有请先添加评论组");
 		return false;
-	}
+	} */
 /* 	var start = $("#start").val();
 	var end = $("#end").val(); */
 	$.ajax({
@@ -320,9 +320,6 @@ function add() {
 			url:url,
 			type:type,
 			number:number,
-			userGroupId:userGroupId,
-			userIds:userIds,
-			discussGroupId:discussGroupId,
 			isdel:0
 		},
 		async : false,
