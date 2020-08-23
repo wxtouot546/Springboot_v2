@@ -320,7 +320,11 @@ public class ThTaskService implements BaseService<ThTask, ThTaskExample>{
 						 fe = pac.pachong(Integer.parseInt(chaxun.getType().toString()),uk.getUserId(),uk.getPassword(),
 								 dis.getDiscussName(),chaxun.getUrl(),chaxun.getNumber(),ss.getIp(),uk.getId()+"");
 					 }else {
-						 pac.pachong(Integer.parseInt(chaxun.getType().toString()),null,null,null,chaxun.getUrl(),1,ss.getIp(),uk.getId()+"");
+						 // 随机选出IP扔进去
+						 List<ThIp> thiplist =  thIpMapper.selectAll(null);
+						 Random random = new Random();
+						 String ipp = thiplist.get(random.nextInt(thiplist.size())).getIp();
+						 pac.pachong(Integer.parseInt(chaxun.getType().toString()),null,null,null,chaxun.getUrl(),1,ipp,uk.getId()+"");
 					 }
 					 
 					 if(!chaxun.getType().equals('3')) {
