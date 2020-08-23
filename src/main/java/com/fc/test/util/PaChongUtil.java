@@ -1,9 +1,6 @@
-package test;
-
-
+package com.fc.test.util;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,60 +11,45 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-import org.apache.commons.io.FileUtils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Proxy;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import com.fc.SpringbootStart;
-import com.fc.test.mapper.auto.GeneratorMapper;
 import com.fc.test.mapper.auto.ThUserMapper;
 import com.fc.test.model.auto.ThUser;
-import com.fc.test.util.jietu;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = SpringbootStart.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class SpringbootTest {
-
-	@Autowired
-	private GeneratorMapper generatorMapper;
-	public static String APIKEY = "f072d2f98c5fd60a815502f048dc7e1d";
+public class PaChongUtil {
+	
 	@Autowired
 	ThUserMapper thUserMapper;
 	
-	@Test
-	public void test(){
-		
+	public int pachong(int typeSwitch,String yonghu,String mima,String pinglun,String tieziUrl,int number,String ip,String nname) {
+		int fe = 0;
 		long waitLoadBaseTime = 1000;
       	int waitLoadRandomTime = 2000;
       	Random random = new Random(System.currentTimeMillis());
-		System.setProperty("webdriver.chrome.driver", "D:\\1111\\chromedriver.exe");
+//		System.setProperty("webdriver.chrome.driver", "D:\\1111\\chromedriver.exe");
+//		ChromeOptions options = new ChromeOptions();
+		System.setProperty("webdriver.chrome.driver", "C:\\chromedriver.exe");
 		ChromeOptions options = new ChromeOptions();
+		// 静默模式
+		//options.addArguments("--headless");
 		//------------------------------------------------------------------------------------------------
 		//	设置代理
 //		Map<String, Object> map = new HashMap<String, Object>();
-//        map.put("httpProxy", "113.239.72.70:24368");
+//        map.put("httpProxy", ip);
 //        Proxy proxy = new Proxy(map);
 //        options.setProxy(proxy);
 //        
-//        options.addExtensions(new File("D:\\daili\\222\\proxy.zip"));
+//        options.addExtensions(new File("C:\\"+nname+".zip"));
 		//------------------------------------------------------------------------------------------------
 		
 		List excludeSwitches= new ArrayList();
@@ -77,9 +59,23 @@ public class SpringbootTest {
 		WebDriver driver = new ChromeDriver(options);
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		// get()打开一个站点
-		driver.get("https://finance.discuss.com.hk/logging.php?action=login"); // 登录
-//		driver.get("https://finance.discuss.com.hk/viewthread.php?tid=29321893&extra=page%3D1");
-//		driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
+		if(typeSwitch == 3) {
+			//driver.get("https://finance.discuss.com.hk/viewthread.php?tid=29321893&extra=page%3D1");
+			driver.get(tieziUrl);
+			try {
+				Thread.sleep(2000);
+				((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight)");  
+				Thread.sleep(2000);
+				driver.quit();
+				return 1;
+			} catch (InterruptedException e) {
+				driver.quit();
+				e.printStackTrace();
+				return 1;
+			}
+		}else {
+			driver.get("https://finance.discuss.com.hk/logging.php?action=login"); // 登录
+		}
 		driver.manage().window().maximize();
 		try {
 			Thread.sleep(waitLoadBaseTime+random.nextInt(waitLoadRandomTime));
@@ -89,15 +85,24 @@ public class SpringbootTest {
 		
 		// 下面的逻辑是登录逻辑
 		try {
-			tiezizhuaqu(driver);
+			if(typeSwitch == 1) {
+				fe = denglu(driver,yonghu,mima,pinglun,tieziUrl);
+			}
+			if(typeSwitch == 2) {
+				fe = tiezizhuaqu(driver,yonghu,mima,pinglun,tieziUrl,number);
+			}
 		} catch (Exception e) {
 			driver.quit();
 			e.printStackTrace();
 		}
+		return fe;
 	}
-	public void tiezizhuaqu(WebDriver driver) throws Exception{
-		String zhanghao = "6869865";
-		String mima = "zxc123456.";
+	
+	
+	public int tiezizhuaqu(WebDriver driver,String yonghu,String mima1,String pinglun,String tieziUrl,int number) throws Exception{
+		int fe = 0;
+		String zhanghao = yonghu;
+		String mima = mima1;
 		//获取输入框元素，并输入值
 		driver.findElement(By.id("username")).sendKeys(zhanghao);
 		//获取输入框元素，并输入值
@@ -116,51 +121,63 @@ public class SpringbootTest {
 				break;
 			}
 			String pinjie = "&page=" + p;
-			driver.get("https://finance.discuss.com.hk/forumdisplay.php?fid=562"+pinjie); // 登录
+			driver.get(tieziUrl+pinjie); // 登录
 			driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 			Thread.sleep(2000);
 			int size = 0;
 			List<WebElement> list = driver.findElements(By.xpath("//tbody[contains(@id,'normalthread_')]"));
 			size = list.size();
 			for(int i =0; i < size; i++) {
-				int s = i+1;
-				String herf = driver.findElement(By.xpath("((//tbody[contains(@id,'normalthread_')])["+s+"]/tr/th)[1]/span/a")).getAttribute("href");
-				String urltime = driver.findElement(By.xpath("(//tbody[contains(@id,'normalthread_')])["+s+"]/tr//td[contains(@class,'author')]/em")).getText();
-				
-				DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-				Calendar calendar = Calendar.getInstance();
-				Date dt1 = df.parse(urltime);
-				Date date=new Date();
-				String time =df.format(date);
-				Date dt2 = df.parse(time);
-				calendar.setTime(date);
-				calendar.add(Calendar.DAY_OF_MONTH, -1);
-				Date newTime = calendar.getTime();
-				String newTime1 = df.format(newTime);
-				Date dt3 = df.parse(newTime1);
-				if(dt1.getTime() ==  dt2.getTime() || dt1.getTime() == dt3.getTime()){
-	
+				try {
+					int s = i+1;
+					WebElement elementt = driver.findElement(By.xpath("//select[contains(@class,'form-control ml-2')]"));
+					Select selectt = new Select(elementt);
+					selectt.getOptions();
+					selectt.selectByIndex(1);
 					Thread.sleep(2000);
-					driver.get(herf); // 登录
-					driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-					driver.findElement(By.cssSelector("div[class='autosave form-control']")).sendKeys("en");
-					Thread.sleep(3000);
-					((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight)");  
 					Thread.sleep(2000);
-					driver.findElement(By.id("postsubmit")).click();
-					Thread.sleep(2000);
-					driver.navigate().back();
-					Thread.sleep(2000);
-					driver.navigate().back();
-					Thread.sleep(20000);
+					String herf = driver.findElement(By.xpath("((//tbody[contains(@id,'normalthread_')])["+s+"]/tr/th)[1]/span/a")).getAttribute("href");
+					String urltime = driver.findElement(By.xpath("(//tbody[contains(@id,'normalthread_')])["+s+"]/tr//td[contains(@class,'author')]/em")).getText();
 					
-				}else{
-					type ++;
-					break;
-				}
-				
-				if(i== size-1) {
-					System.out.println("完成了"+size);
+					DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+					Calendar calendar = Calendar.getInstance();
+					Date dt1 = df.parse(urltime);
+					Date date=new Date();
+					String time =df.format(date);
+					Date dt2 = df.parse(time);
+					calendar.setTime(date);
+					calendar.add(Calendar.DAY_OF_MONTH, -1);
+					Date newTime = calendar.getTime();
+					String newTime1 = df.format(newTime);
+					Date dt3 = df.parse(newTime1);
+					if(dt1.getTime() ==  dt2.getTime() || dt1.getTime() == dt3.getTime()){
+		
+						Thread.sleep(2000);
+						driver.get(herf); // 登录
+						driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+						driver.findElement(By.cssSelector("div[class='autosave form-control']")).sendKeys(pinglun);
+						Thread.sleep(3000);
+						((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight)");  
+						Thread.sleep(2000);
+						driver.findElement(By.id("postsubmit")).click();
+						Thread.sleep(1000);
+						driver.navigate().back();
+						Thread.sleep(1000);
+						driver.navigate().back();
+						Thread.sleep(10000);
+						
+					}else{
+						type ++;
+						break;
+					}
+					if((i+1) > number) {
+						type ++;
+						break;
+					}
+					if(i== size-1) {
+						System.out.println("完成了"+size);
+					}
+				} catch (Exception e) {
 				}
 			}
 		}
@@ -171,21 +188,17 @@ public class SpringbootTest {
 		String fenshu = driver.findElement(By.xpath("(//div[contains(@class,'user-profile-info-right')])[4]")).getText();
 		System.out.println(fenshu);
 		Thread.sleep(1000);
-		// 更新积分
-		ThUser record = new ThUser();
-		record.setUserId(zhanghao);
-		record.setPassword(mima);
-		List<ThUser> userlt = thUserMapper.selectAll(record);
-		userlt.get(0).setFraction(Integer.parseInt(fenshu));
-		thUserMapper.updateByPrimaryKeySelective(userlt.get(0));
+		fe = Integer.parseInt(fenshu);
 		// 执行完毕关闭网站
 		driver.quit();
+		return fe;
 		
 	}
 	// 登录逻辑
-	public void denglu(WebDriver driver) throws Exception {
-		String zhanghao = "6869906";
-		String mima = "zxc123456.";
+	public int denglu(WebDriver driver,String yonghu,String mima1,String pinglun,String tieziUrl) throws Exception {
+		int fe = 0;
+		String zhanghao = yonghu;
+		String mima = mima1;
 		//获取输入框元素，并输入值
 		driver.findElement(By.id("username")).sendKeys(zhanghao);
 		//获取输入框元素，并输入值
@@ -251,14 +264,15 @@ public class SpringbootTest {
 		Thread.sleep(2000);
 		driver.findElement(By.className("submit")).click();
 		Thread.sleep(1000);
-		driver.get("https://finance.discuss.com.hk/redirect.php?fid=57&tid=29327097&goto=nextoldset"); // 登录
+		//driver.get("https://finance.discuss.com.hk/redirect.php?fid=57&tid=29327097&goto=nextoldset"); // 登录
+		driver.get(tieziUrl); // 登录
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-		driver.findElement(By.cssSelector("div[class='autosave form-control']")).sendKeys("恩嗯嗯");
+		driver.findElement(By.cssSelector("div[class='autosave form-control']")).sendKeys(pinglun);
 		Thread.sleep(3000);
 		((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight)");  
 		Thread.sleep(2000);
 		driver.findElement(By.id("postsubmit")).click();
-		Thread.sleep(1000);
+		Thread.sleep(2000);
 		driver.get("https://finance.discuss.com.hk/space.php?action=viewpro&uid="+zhanghao); // 登录
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight)"); 
@@ -266,15 +280,10 @@ public class SpringbootTest {
 		String fenshu = driver.findElement(By.xpath("(//div[contains(@class,'user-profile-info-right')])[4]")).getText();
 		System.out.println(fenshu);
 		Thread.sleep(1000);
-		// 更新积分
-		ThUser record = new ThUser();
-		record.setUserId(zhanghao);
-		record.setPassword(mima);
-		List<ThUser> userlt = thUserMapper.selectAll(record);
-		userlt.get(0).setFraction(Integer.parseInt(fenshu));
-		thUserMapper.updateByPrimaryKeySelective(userlt.get(0));
+		fe = Integer.parseInt(fenshu);
 		// 执行完毕关闭网站
 		driver.quit();
+		return fe;
 	
 	}
 	
@@ -290,6 +299,4 @@ public class SpringbootTest {
 		actions.release();
 		actions.moveToElement(abnormElement, x, y).click().build().perform();
 	}
-	
-
 }

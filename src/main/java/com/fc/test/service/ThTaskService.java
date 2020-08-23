@@ -17,17 +17,20 @@ import com.fc.test.common.support.ConvertUtil;
 import com.fc.test.mapper.auto.ThDiscussMapper;
 import com.fc.test.mapper.auto.ThDiscussRelationGroupMapper;
 import com.fc.test.mapper.auto.ThHistoryMapper;
+import com.fc.test.mapper.auto.ThIpMapper;
 import com.fc.test.mapper.auto.ThTaskMapper;
 import com.fc.test.mapper.auto.ThTaskSplitMapper;
 import com.fc.test.mapper.auto.ThUserMapper;
 import com.fc.test.model.auto.ThDiscuss;
 import com.fc.test.model.auto.ThDiscussRelationGroup;
 import com.fc.test.model.auto.ThHistory;
+import com.fc.test.model.auto.ThIp;
 import com.fc.test.model.auto.ThTask;
 import com.fc.test.model.auto.ThTaskExample;
 import com.fc.test.model.auto.ThTaskSplit;
 import com.fc.test.model.auto.ThUser;
 import com.fc.test.model.custom.Tablepar;
+import com.fc.test.util.PaChongUtil;
 import com.fc.test.util.SnowflakeIdWorker;
 import com.fc.test.util.StringUtils;
 import com.fc.test.util.xgltUtil;
@@ -54,6 +57,8 @@ public class ThTaskService implements BaseService<ThTask, ThTaskExample>{
 	private ThDiscussRelationGroupMapper thDiscussRelationGroupMapper;
 	@Autowired
 	private ThHistoryMapper thHistoryMapper;
+	@Autowired
+	private ThIpMapper thIpMapper;
 	
       	   	      	      	      	      	      	      	      	      	      	      	      	      	      	      	
 	/**
@@ -302,10 +307,30 @@ public class ThTaskService implements BaseService<ThTask, ThTaskExample>{
 			 Character isd = chaxun.getIsdel();
 			 if(null != list && list.size() != 0 && !isd.equals('2')) {
 				 for(ThTaskSplit ts :list) {
-					 
+					 int fe = 0;
+					 ThUser rus = new ThUser();
+					 rus.setId(ts.getUserId());
+					 ThUser uk  =  thUserMapper.selectAllbyisid(rus);
+					 // 评论 thDiscussMapper
+					 ThDiscuss dis =  thDiscussMapper.selectByPrimaryKey(ts.getDiscussId());
+					 ThIp ss = thIpMapper.selectByPrimaryKey(Integer.parseInt(uk.getIpId()));
 					 // 爬虫
-					 //xgltUtil pachong = new xgltUtil();
-					 //pachong.qidongfangwen(null);
+					 PaChongUtil pac = new PaChongUtil();
+					 if(!chaxun.getType().equals('3')) {
+						 fe = pac.pachong(Integer.parseInt(chaxun.getType().toString()),uk.getUserId(),uk.getPassword(),
+								 dis.getDiscussName(),chaxun.getUrl(),chaxun.getNumber(),ss.getIp(),uk.getId()+"");
+					 }else {
+						 pac.pachong(Integer.parseInt(chaxun.getType().toString()),null,null,null,chaxun.getUrl(),1,ss.getIp(),uk.getId()+"");
+					 }
+					 
+					 if(!chaxun.getType().equals('3')) {
+						// 更新积分
+						ThUser record = new ThUser();
+						rus.setId(ts.getUserId());
+						rus.setFraction(fe);
+						thUserMapper.updateByPrimaryKeySelective(rus);
+					 }
+					
 					 
 					 // 线程沉睡50秒
 					 if(chaxun.getType().equals('3')) {

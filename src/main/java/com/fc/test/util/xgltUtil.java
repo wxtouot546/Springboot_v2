@@ -55,11 +55,11 @@ public class xgltUtil {
 	 * 
 	 */
 	public void  qidongfangwen(String ip) throws IOException{
-	  String url2 = "https://finance.discuss.com.hk/viewthread.php?tid=29301303&extra=page%3D1";
+	  String url2 = "https://finance.discuss.com.hk/viewthread.php?tid=29295027&extra=page%3D1";
 	  // String url2 = "http://httpbin.org/ip";
 	   //String url2 = "https://www.baidu.com";
 	   // ip 先写死
-	   ip = "156.251.125.133:12125";
+	  // ip = "156.251.125.136:3194";
 	   InputStream is = null;
        BufferedReader br = null;
        String temp="";

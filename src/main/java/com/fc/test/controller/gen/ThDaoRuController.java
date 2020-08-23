@@ -1,10 +1,21 @@
 package com.fc.test.controller.gen;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,6 +50,8 @@ import com.fc.test.model.auto.ThIp;
 import com.fc.test.model.auto.ThUser;
 import com.fc.test.model.auto.ThUserGroup;
 import com.fc.test.model.auto.ThUserRelationGroup;
+import com.fc.test.util.WriteJS;
+import com.fc.test.util.ZipUtil;
 
 import io.swagger.annotations.Api;
 
@@ -114,6 +127,7 @@ public class ThDaoRuController extends BaseController{
 					}else {
 						ipdd = thiplist.get(0).getId();
 					}
+					
 				}
 				if(null != cellStr1 && !"".equals(cellStr1.trim())) {
 					ThUserGroup oup = new ThUserGroup();
@@ -157,7 +171,71 @@ public class ThDaoRuController extends BaseController{
 						thUserMapper.updateByPrimaryKeySelective(userdd);
 						userid = uslist.get(0).getId();
 					}
+					// 根据ipid 查出ip
+					ThIp iipn =  thIpMapper.selectByPrimaryKey(ipdd);
+					String ip = iipn.getIp();
+					String temp[] = ip.split(":");
+					try {
+						// 根据: 拆分
+						WriteJS a = new WriteJS();
+						// 路径，端口号，账号、密码。文件名
+						a.sc(temp[0], temp[1], cellStr.trim(), cellStr3.trim(), "background");
+						ZipUtil z = new ZipUtil();
+						List<File> fileList = new ArrayList<>();
+						File file = new File("C:\\"+userid+".zip");
+						if(!file.exists()) {
+							file.createNewFile();
+						}
+						//分别是2个文件的输入流
+						InputStream in1 = new FileInputStream("C:\\background.js");
+						InputStream in2 = new FileInputStream("C:\\manifest.json");
+						//分别是2个文件读取时的缓冲区大小，1024Bytes,也就是说每次读1M,假如文件1有2.5M,那就要读三次
+						byte[] b1=new byte[1024];
+						byte[] b2=new byte[1024];
+						//每个文件读完后，用一个字符串存储文件内容
+						String s1="";
+						String s2="";
+						//下面这个while循环读文件的代码不知道你看不看得懂，我不知道该怎么写注释，你要是不懂再问我吧
+						int len1=0;
+						int len2=0;
+						while((len1=in1.read(b1))!=-1){
+							s1+=new String(b1, 0, len1);
+						}
+						while((len2=in2.read(b2))!=-1){
+							s2+=new String(b2, 0, len2);
+						}
+						
+						//定义输出流，目的地是aaa.zip
+						FileOutputStream fout = new FileOutputStream("C:\\"+userid+".zip");
+						//将三个文件的内容放进一个map里
+						Map<String, byte[]> datas = new HashMap<String, byte[]>();
+						datas.put("background.js", s1.getBytes());
+						datas.put("manifest.json", s2.getBytes());
+				 
+						//装饰器模式：用ZipOutputStream包装输出流，使其拥有写入zip文件的能力
+						ZipOutputStream zipout = new ZipOutputStream(new BufferedOutputStream(fout));
+						
+						//遍历
+						Set<String> keys = datas.keySet();
+						for (String key : keys) {
+							//下面就是循环把每个文件写进zip文件
+							InputStream bin = new BufferedInputStream(new ByteArrayInputStream(datas.get(key)));
+							byte[] b = new byte[1024];
+							
+							zipout.putNextEntry(new ZipEntry(key));
+							int len = -1;
+							while ((len = bin.read(b)) !=-1) {
+								zipout.write(b, 0, len);
+							}
+						}
+						
+						
+						zipout.close();
+					} catch (Exception e) {
+						
+					}
 					
+				
 				}else {
 					tys = "导入失败 用户名密码不能为空";
 					break;
